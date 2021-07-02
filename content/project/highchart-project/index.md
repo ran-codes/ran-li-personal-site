@@ -2,9 +2,12 @@
 date: "2021-06-27T00:00:00Z"
 external_link: ""
 image:
-  caption: Photo by cceee on Unsplash
+  caption: Photo by ikhsan baihaqi on Unsplash
   focal_point: Smart
 summary: An example of NPM import highcharts 
+tags:
+- Things I Learned
+- Data Viz
 title: Hello Highcharts
 url_code: ""
 url_pdf: ""
