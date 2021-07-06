@@ -13,7 +13,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
-   sodipodi:docname="browser svg.svg">
+   sodipodi:docname="browser-svg.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="184.8634"
-     inkscape:cy="728.16658"
+     inkscape:zoom="1.979899"
+     inkscape:cx="200.45328"
+     inkscape:cy="-7.8195618"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -43,7 +43,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -52,36 +52,39 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#cccccc;fill-opacity:1;stroke-width:0.264583"
+       style="fill:#cccccc;fill-opacity:1;stroke-width:0.192935"
        id="rect876"
        width="210.15475"
-       height="7.5595236"
+       height="4.0196948"
        x="0"
        y="-0.18898752" />
     <circle
-       style="fill:#ec6e67;fill-opacity:1;fill-rule:evenodd;stroke-width:0.264583"
+       style="fill:#ec6e67;fill-opacity:1;fill-rule:evenodd;stroke-width:0.141174"
        id="path12"
-       cx="5.2916665"
-       cy="3.5907731"
-       r="2.4568453" />
+       cx="4.8545012"
+       cy="1.7971363"
+       rx="1.452716"
+       ry="1.1829257" />
     <circle
-       style="fill:#59cf89;fill-opacity:1;fill-rule:evenodd;stroke-width:0.264583"
+       style="fill:#59cf89;fill-opacity:1;fill-rule:evenodd;stroke-width:0.141174"
        id="path12-2"
-       cx="23.122381"
-       cy="3.7797618"
-       r="2.4568453" />
+       cx="15.397683"
+       cy="1.8881309"
+       rx="1.452716"
+       ry="1.1829257" />
     <circle
-       style="fill:#e8c541;fill-opacity:1;fill-rule:evenodd;stroke-width:0.264583"
+       style="fill:#e8c541;fill-opacity:1;fill-rule:evenodd;stroke-width:0.141174"
        id="path12-7"
-       cx="14.417467"
-       cy="3.5909524"
-       r="2.4568453"
-       inkscape:transform-center-x="-0.56696429"
-       inkscape:transform-center-y="1.5119048" />
+       cx="10.250525"
+       cy="1.7972227"
+       inkscape:transform-center-x="-0.33524204"
+       inkscape:transform-center-y="0.72795439"
+       rx="1.452716"
+       ry="1.1829257" />
     <path
        id="rect897"
-       style="fill:#e6e6e6;fill-opacity:1;stroke-width:0.252137"
-       d="m 33.687651,1.0648638 21.302716,0.06346 5.801648,6.351009 H 27.005913 Z"
+       style="fill:#e6e6e6;fill-opacity:1;stroke-width:0.144431"
+       d="M 28.147958,0.43048736 44.821627,0.46423153 46.652442,3.888559 H 25.8032 Z"
        sodipodi:nodetypes="ccccc" />
   </g>
 </svg>
