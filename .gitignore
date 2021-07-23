@@ -9,3 +9,5 @@ Thumbs.db
 /resources/
 /renv/
 
+content/post/2021-07-23-reverse-geocoding-from-coordinate-to-zcta-in-r/zcta_all.rdata
+content/post/2021-07-23-reverse-geocoding-from-coordinate-to-zcta-in-r/sf_zcta_us.rdata

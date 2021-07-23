@@ -1,0 +1,162 @@
+---
+title: Reverse geocoding from coordinate to ZCTA in R
+author: Ran Li
+date: '2021-07-23'
+slug: reverse-geocoding-from-coordinate-to-zcta-in-r
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-07-23T10:05:05-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(shiny)
+library(sf)
+library(rgdal)
+library(purrr)
+library(knitr)
+library(leaflet)
+library(glue)
+load("sf_zcta_philly.rdata")
+df_coord = sf_zcta_philly %>% 
+  st_centroid() %>% 
+  st_coordinates() %>% 
+  as_tibble() %>% 
+  mutate(zcta_origin = sf_zcta_philly$zcta ) %>% 
+  sample_n(5) %>% 
+  mutate(id = row_number()) %>% 
+  select(id, longitude=X,  latitude = Y,zcta_origin)  
+
+```
+
+Goal: Starting with a list of coordinates (lng and lat) we want to find which ZCTA they belong to.
+
+Data required:
+- table of coordinates 
+- ZCTA boundaries/shape files: You can find the most shape files for US geographic units at the [US Census Bureau website](https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html), the specific link for ZCTA files are. [here](https://www2.census.gov/geo/tiger/TIGER2019/ZCTA5/).
+
+
+Libraries require:
+- tidyverse: for data management with dplr and functional programming tools with purrr.
+- sf: working with [simple features](https://r-spatial.github.io/sf/).
+- rgdal: for reading shape files.
+
+
+
+# Step 1: Prepare your data
+
+The code below loads libraries and the data required. Note for this example we providing a minumum example looking at ZCTAs in Philadelphia. We first get some coordinates by taking the centroid of the ZCTA and taking a sample of 5 ZCTA cetrnoids; these will be used for reverse geocoding. The answer is stored in the column 'zcta_origin'. You will probably have some coordinates already in hand... so just use your table here.
+
+```{r eval=FALSE, warning=FALSE}
+### Loadl libraries
+library(tidyverse)
+library(sf)
+library(rgdal)
+library(purrr)
+
+
+### Read in ZCTA shape files
+sf_zcta_philly = readOGR("Census ZCTA Shape Files/tl_2019_us_zcta510.shp") %>%
+  st_as_sf()   %>% 
+  mutate(zcta = ZCTA5CE10 ) %>% 
+  left_join(xwalk_zcta_bchc) %>% 
+  filter(city == "Philadelphia")
+
+### Get centroids/coords for us to do reverse geocoding. 
+df_coord = sf_zcta_philly %>% 
+  st_centroid() %>% 
+  st_coordinates() %>% 
+  as_tibble() %>% 
+  mutate(zcta_origin = sf_zcta_philly$zcta ) %>% 
+  sample_n(5) %>% 
+  mutate(id = row_number()) %>% 
+  select(id, longitude=X,  latitude = Y,zcta_origin)  
+
+```
+
+The table of coordinates we are work with looks like this... just five rows for this example. 
+
+```{r echo=FALSE, warning=FALSE}
+df_coord%>% 
+  knitr::kable()
+```
+
+# Step 2: Function to find out which ZCTA they intersect with
+
+Lets first write some code to see which ZCTA a coordinate pair intersects with. 
+
+```{r warning=FALSE}
+
+### Lets take the first row and make a  point object
+lng_tmp = df_coord %>% slice(1) %>% pull(longitude)
+lat_tmp = df_coord %>% slice(1) %>% pull(latitude)
+zcta_origin_tmp = df_coord %>% slice(1) %>% pull(zcta_origin)
+pt_tmp = st_point(x = c(lng_tmp, lat_tmp), dim = "XYZ")
+
+### see which polygon/row of sf_zcta_philly this point intersects with
+intersection_row_tmp = st_intersects(pt_tmp,sf_zcta_philly)[[1]]
+sf_zcta_tmp = sf_zcta_philly %>% slice(intersection_row_tmp)
+zcta_tmp = sf_zcta_tmp$ZCTA5CE10
+
+### Lets check by plotting the starting coordinate and the ZCTA we matched
+leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(lng = lng_tmp, lat = lat_tmp,  
+             label = glue("ZCTA_origin: {zcta_origin_tmp}</br>Coord: ({round(lng_tmp,2)}, {round(lat_tmp,2)})") %>% HTML(),
+             labelOptions = labelOptions(noHide = T, direction = "bottom")) %>% 
+  addPolygons(data = sf_zcta_tmp, label = paste("ZCTA:",zcta_tmp))
+
+```
+
+Indeed the map shows that we have correctly matched coordinate to ZCTA. Moreover, if you hover over the polygon you can see that the ZCTA matches the ZCTA_origin of the point. Now since we want to iterate this process over many points. Lets turn the above process into a function. 
+
+```{r warning=FALSE}
+get_zcta_from_coord = function(row_tmp){
+  df_coord_row = df_coord %>% slice(row_tmp)
+ 
+  ### Make a  point object
+  pt_tmp = st_point(x = c(df_coord_row$longitude, df_coord_row$latitude), dim = "XYZ")
+  ### see which polygon/row of sf_zcta_philly this point intersects with
+  intersection_row_tmp = st_intersects(pt_tmp,sf_zcta_philly)[[1]]
+  sf_zcta_tmp = sf_zcta_philly %>% slice(intersection_row_tmp)
+  zcta_tmp = sf_zcta_tmp$ZCTA5CE10
+  ### Return table with id and matched zcta
+  tibble(id = df_coord_row$id, 
+         zcta_matched = zcta_tmp)
+}
+
+```
+
+# Step 3: Repeat process for each coordinate 
+
+The next step is to iterate or loop over each coordiante we want to find ZCTA's for. We will use a functional programming approach with the map() from purrr as it makes iterating much easier. So we will pass in a vector of numbers 1 to number of rows in df_coord. Then we will run get_zcta_from_coord() for each coord or row in df_coord. With one line of code we can get the final result. 
+
+```{r warning=FALSE}
+df_results = map_df(1:nrow(df_coord),get_zcta_from_coord)
+df_results %>% kable()
+```
+
+Lets check the final result with our answers aka zcta_origin
+
+
+```{r warning=FALSE}
+df_results %>%
+  left_join(df_coord %>% select(id, zcta_origin)) %>% 
+  kable()
+```
+
+The ZCTAs that we matched with our function indeed match the original ZCTA. :smile: :taco:
+
+                 
+                 
