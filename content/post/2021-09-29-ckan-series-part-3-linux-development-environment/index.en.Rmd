@@ -1,0 +1,38 @@
+---
+title: 'CKAN Series Part 3: CKAN installation source?'
+author: Ran Li
+date: '2021-09-29'
+slug: ckan-series-part-3-linux-development-environment
+categories:
+  - CKAN Series
+tags:
+  - Ubuntu
+  - Linux
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-09-29T16:48:51-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+Disclaimer... not an expert at CKAN. 
+
+According to their [installation documentation](https://docs.ckan.org/en/2.9/maintaining/installing/index.html) it sounds like I should install CKAN from source since it is the most customization vs package installation and should have a easier deployment process vs Docker Compose ([source install deployment](https://docs.ckan.org/en/2.9/maintaining/installing/deployment.html)).
+
+CKAN runs on Linux and since we will be installing from source and not via docker. It's good to invest some time in setting a efficient Linux environment instead of working all day on command line: Ubuntu Desktop/Virtual Box, VS Code for text editting, GitHub Desktop for version control. Also since CKAN is built on Django/python (I think???) add a Django/Python IDE (going to try pyCharm).  
+
+### Ubuntu/Virtual Box 
+
+I installed Ubuntu 20.04 LTS and run it using VirtualBox as per the instructions [here](https://www.youtube.com/watch?v=x5MhydijWmc&ab_channel=ProgrammingKnowledge).
+
+### Python Dev Environment 
+
+Pycharm seems like what I would eventually use (high functionality) but its not very lightweight, particularly for use in a virtual environment that isn't as powerful as host. Perhaps I install two things, one IDE (e.g. Pycharm) then just another text editor (e.g. sublime). Seems reasonable... let's try and figure things our as we go. 
+
+
+
