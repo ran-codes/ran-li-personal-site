@@ -1,5 +1,5 @@
 ---
-title: 'CKAN Series Part 3: CKAN installation source?'
+title: 'CKAN Series Part 3: Setting up a Linux Environment'
 author: Ran Li
 date: '2021-09-29'
 slug: ckan-series-part-3-linux-development-environment
@@ -8,6 +8,7 @@ categories:
 tags:
   - Ubuntu
   - Linux
+  - /uses
 subtitle: ''
 summary: ''
 authors: []
@@ -24,12 +25,29 @@ projects: []
 
 <p>Disclaimer… not an expert at CKAN.</p>
 <p>According to their <a href="https://docs.ckan.org/en/2.9/maintaining/installing/index.html">installation documentation</a> it sounds like I should install CKAN from source since it is the most customization vs package installation and should have a easier deployment process vs Docker Compose (<a href="https://docs.ckan.org/en/2.9/maintaining/installing/deployment.html">source install deployment</a>).</p>
-<p>CKAN runs on Linux and since we will be installing from source and not via docker. It’s good to invest some time in setting a efficient Linux environment instead of working all day on command line: Ubuntu Desktop/Virtual Box, VS Code for text editting, GitHub Desktop for version control. Also since CKAN is built on Django/python (I think???) add a Django/Python IDE (going to try pyCharm).</p>
+<p>CKAN runs on Linux and since we will be installing from source and not via docker. It’s good to invest some time in setting a efficient Linux environment instead of working all day on command line: Ubuntu Desktop/Virtual Box, PyCharm as a python IDE and VS Code for front end development, GitHub Desktop for version control. Also since CKAN is built on Django/python (I think???) add a Django/Python IDE (going to try PyCharm).</p>
+<p>Note in Linux,there are two popular package managers (think of CRAN): SNAP and apt. Most software have installation instructions on their get started page.</p>
+<p>Note at the time of video here are the versions used:</p>
+<ul>
+<li>Ubuntu 20.04 LTS</li>
+<li>Python: 3.8.10</li>
+<li>PyCharm: 2021.2.2 (Community Edition)</li>
+<li>VS Code: 7f6ab548</li>
+<li>GitHub Desktop: 2.6.3</li>
+</ul>
 <div id="ubuntuvirtual-box" class="section level3">
 <h3>Ubuntu/Virtual Box</h3>
-<p>I installed Ubuntu 20.04 LTS and run it using VirtualBox as per the instructions <a href="https://www.youtube.com/watch?v=x5MhydijWmc&amp;ab_channel=ProgrammingKnowledge">here</a>.</p>
+<p>I hate working in command line. So I installed Ubuntu Desktop 20.04 LTS Linux and run it using VirtualBox as per the instructions <a href="https://www.youtube.com/watch?v=x5MhydijWmc&amp;ab_channel=ProgrammingKnowledge">here</a>.</p>
 </div>
-<div id="python-dev-environment" class="section level3">
-<h3>Python Dev Environment</h3>
-<p>Pycharm seems like what I would eventually use (high functionality) but its not very lightweight, particularly for use in a virtual environment that isn’t as powerful as host. Perhaps I install two things, one IDE (e.g. Pycharm) then just another text editor (e.g. sublime). Seems reasonable… let’s try and figure things our as we go.</p>
+<div id="python-ide-pycharm" class="section level3">
+<h3>Python IDE (PyCharm)</h3>
+<p>Here is my reference for installation of <a href="https://www.youtube.com/watch?v=15daSz2QExo&amp;ab_channel=ProgrammingKnowledge">PyCharm</a>.</p>
+</div>
+<div id="front-end-development-vs-code" class="section level3">
+<h3>Front End Development (VS Code)</h3>
+<p>VS code’s combinations of Prettier and Live Server and their UI features (color input for CSS) makes it an excellent tool for front end development. Have experience will stick with it. If my VM get resource starved I might consider going to something lightweight like sublime.</p>
+</div>
+<div id="github-desktop" class="section level3">
+<h3>GitHub Desktop</h3>
+<p>I hate command line. Feel having GUI reduces the learning curve of Git. GitHub Desktop has worked well in the past for me. See instructions for installing <a href="https://gist.github.com/berkorbay/6feda478a00b0432d13f1fc0a50467f1">from terminal here</a></p>
 </div>

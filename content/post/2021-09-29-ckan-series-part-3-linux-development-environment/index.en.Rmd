@@ -1,5 +1,5 @@
 ---
-title: 'CKAN Series Part 3: CKAN installation source?'
+title: 'CKAN Series Part 3: Setting up a Linux Environment'
 author: Ran Li
 date: '2021-09-29'
 slug: ckan-series-part-3-linux-development-environment
@@ -8,6 +8,7 @@ categories:
 tags:
   - Ubuntu
   - Linux
+  - /uses
 subtitle: ''
 summary: ''
 authors: []
@@ -20,19 +21,34 @@ image:
 projects: []
 ---
 
-Disclaimer... not an expert at CKAN. 
+Disclaimer... not an expert at CKAN.
 
 According to their [installation documentation](https://docs.ckan.org/en/2.9/maintaining/installing/index.html) it sounds like I should install CKAN from source since it is the most customization vs package installation and should have a easier deployment process vs Docker Compose ([source install deployment](https://docs.ckan.org/en/2.9/maintaining/installing/deployment.html)).
 
-CKAN runs on Linux and since we will be installing from source and not via docker. It's good to invest some time in setting a efficient Linux environment instead of working all day on command line: Ubuntu Desktop/Virtual Box, VS Code for text editting, GitHub Desktop for version control. Also since CKAN is built on Django/python (I think???) add a Django/Python IDE (going to try pyCharm).  
+CKAN runs on Linux and since we will be installing from source and not via docker. It's good to invest some time in setting a efficient Linux environment instead of working all day on command line: Ubuntu Desktop/Virtual Box, PyCharm as a python IDE and VS Code for front end development, GitHub Desktop for version control. Also since CKAN is built on Django/python (I think???) add a Django/Python IDE (going to try PyCharm).
 
-### Ubuntu/Virtual Box 
+Note in Linux,there are two popular package managers (think of CRAN): SNAP and apt. Most software have installation instructions on their get started page.
 
-I installed Ubuntu 20.04 LTS and run it using VirtualBox as per the instructions [here](https://www.youtube.com/watch?v=x5MhydijWmc&ab_channel=ProgrammingKnowledge).
+Note at the time of video here are the versions used:
 
-### Python Dev Environment 
+-   Ubuntu 20.04 LTS
+-   Python: 3.8.10
+-   PyCharm: 2021.2.2 (Community Edition)
+-   VS Code: 7f6ab548
+-   GitHub Desktop: 2.6.3
 
-Pycharm seems like what I would eventually use (high functionality) but its not very lightweight, particularly for use in a virtual environment that isn't as powerful as host. Perhaps I install two things, one IDE (e.g. Pycharm) then just another text editor (e.g. sublime). Seems reasonable... let's try and figure things our as we go. 
+### Ubuntu/Virtual Box
 
+I hate working in command line. So I installed Ubuntu Desktop 20.04 LTS Linux and run it using VirtualBox as per the instructions [here](https://www.youtube.com/watch?v=x5MhydijWmc&ab_channel=ProgrammingKnowledge).
 
+### Python IDE (PyCharm)
 
+Here is my reference for installation of [PyCharm](https://www.youtube.com/watch?v=15daSz2QExo&ab_channel=ProgrammingKnowledge).
+
+### Front End Development (VS Code)
+
+VS code's combinations of Prettier and Live Server and their UI features (color input for CSS) makes it an excellent tool for front end development. Have experience will stick with it. If my VM get resource starved I might consider going to something lightweight like sublime.
+
+### GitHub Desktop 
+
+I hate command line. Feel having GUI reduces the learning curve of Git. GitHub Desktop has worked well in the past for me. See instructions for installing [from terminal here](https://gist.github.com/berkorbay/6feda478a00b0432d13f1fc0a50467f1)
