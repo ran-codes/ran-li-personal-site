@@ -1,0 +1,50 @@
+---
+title: 'CKAN Series Part 4: Python IDE - PyCharm'
+author: Ran Li
+date: '2021-09-30'
+slug: ckan-series-part-4-python-ide-pycharm
+categories:
+  - CKAN Series
+  - Python
+tags:
+  - /uses
+  - Pycharm
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-09-30T11:55:05-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+Will invest a bit of time familiarizing myself PyCharm and meaningful best-practices/settings/packages for productivity. From my experiences with Rstudio, I feel like if I had spent a few hours getting to know meaningful features and extensions of Rstudio early on in my R journey, I would have saved my self many headaches and many many hours of work. with that in mind there are two resource to learn from: PyCharm's own learning project as well as a setup for productivity guide from TechWithTim.
+
+## PyCharm Learning Project.
+
+#### Onboarding
+
+-   **Python Project**: any folder that contains any files in it. Can use PyCharm to open a folder like how VS Code opens folders.
+
+-   **Run Configurations** can be selected to run each Python file; the main option here is which python interpreter to use (Python version).
+
+-   **Run Toolbar**: is available after you select a run configuration. Short cut for various running actions (run, debug, profile and running with coverage).
+
+-   **Debugger**: Similar to Rstudio you can insert breakpoints in your script and run a debugger (e.g. a micro-environment within the function to see function scoped variables to help debug)
+
+-   **Auto-complete**: Similar to Rstudio, PyCharm will auto-complete function calls and variable calls. Sweet!
+
+-   **Light-bulbs:** PyCharm adds light bulbs when you are at a line of code which it detects that improvements can be made (i guess refactoring for elegance or readability). You can press Alt Enter or click light bulb to see the suggest and decide to apply or not.
+
+#### Editor basics
+
+-   **Search** **for Actions**: press Shift two times to open search everything (IDE function, settings, file names .... ETC). You can set IDE settings here or preform actions such as case changes or line numbers...ETC.
+
+-   **Expanding and shrinking code selection:**
+
+##  TechWithTim's PyCharm tutorial.
+
+## 
