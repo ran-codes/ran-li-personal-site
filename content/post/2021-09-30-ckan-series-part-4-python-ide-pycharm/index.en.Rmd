@@ -21,7 +21,7 @@ image:
 projects: []
 ---
 
-Will invest a bit of time familiarizing myself PyCharm and meaningful best-practices/settings/packages for productivity. From my experiences with Rstudio, I feel like if I had spent a few hours getting to know meaningful features and extensions of Rstudio early on in my R journey, I would have saved my self many headaches and many many hours of work. with that in mind there are two resource to learn from: PyCharm's own learning project as well as a setup for productivity guide from TechWithTim.
+I will invest a bit of time familiarizing myself PyCharm and meaningful best-practices/settings/packages for productivity. From my experiences with Rstudio, I think time spent on learning IDE is a small investment for big long term return; if I had spent a few hours getting to know meaningful features and extensions of Rstudio early on in my R journey, I would have saved my self many headaches and many many hours of work. with that in mind there are two resource to learn from: PyCharm's own learning project as well as a setup for productivity [guide](https://www.youtube.com/watch?v=56bPIGf4us0&t=59s&ab_channel=TechWithTim) from TechWithTim.
 
 ## PyCharm Learning Project.
 
@@ -41,10 +41,66 @@ Will invest a bit of time familiarizing myself PyCharm and meaningful best-pract
 
 #### Editor basics
 
--   **Search** **for Actions**: press Shift two times to open search everything (IDE function, settings, file names .... ETC). You can set IDE settings here or preform actions such as case changes or line numbers...ETC.
+-   **Search** **for Actions**: press **Shift two times** or **Ctrl Shift A** to open search everything (IDE function, settings, file names .... ETC). You can set IDE settings here or preform actions such as case changes or line numbers...ETC.
 
--   **Expanding and shrinking code selection:**
+-   :sparkles: **Expanding and shrinking code selection:** this is actually amazing and wish Rstudio has this. Ctrl+W to expand selection from caret, once for word, then keep pressing to go up in scale (e.g. caret \> word \> argument \> function \> just keeps going up code hierarchy). Then Ctrl+Shift+W to do the reverse (shrink).
 
-##  TechWithTim's PyCharm tutorial.
+-   **Comment or Un-comment line:** Ctrl+ /
+
+-   **Moving code fragments**: Moving individual line use the IDE function 'Move Line Up/Down' to move entire chunks Ctrl+Shift+up/down
+
+-   :sparkles:**Collapse:** For caret level: Ctrl+Minus to collapse, Ctrl+Equals to expand. For entire file: Ctrl+Shift+Minus to collapse, Ctrl+Shift+Equals to expand.
+
+-   **Multiple Selection**: Alt+J to select next occurrences of symbol at caret. Alt+Shift+J to deselect last occurrences. Ctrl+Alt+Shift+J to select all occurrence; then type to replace.
+
+#### Code Completion
+
+-   **Basic completion**: Press enter for proposed completion, hit Ctrl+Space to activate basic completion explicitly.
+
+-   **Tab Completion**: after activating basic completion you hit space to add the auto-complete or tab to replace the current symbol with the auto-complete
+
+-   **F-string completion**: well i learned that {string} is actually called and *F-string.* Used it in R's glue and javascript back tick strings; very useful. Basic completion is implemented in F-strings in PyCharm.
+
+#### Code Assistance
+
+-   **Code format: Ctrl Alt L** to auto format code
+
+-   **Parameter Info: Ctrl P** to see a method's signature (function's arguments).
+
+-   **Quick Popups:** **Ctrl Q** to open up documentation popup (similar to Rstudio's '??'
+
+-   **Editor coding assistance (errors)**: **F2** to go to next error in file. **Ctrl F1** to see description of error then **Alt Enter** to see suggested fixes.
+
+#### Navigation
+
+-   :sparkles: **Declaration and usages**: To open
+
+-   :sparkles: **File Structure**: for large source files you can preview (similar to Rstudio's side menu) the file structure with **Ctrl F12**; this preview is interactive typing to filter. TO open a tool window with file structure press **Alt 7**.
+
+-    **Find and replace in file:** this may be useful: searching for strings within a project across all files and replacing as needed (can customize scope). But long directions, better to refer to the lesson itself.
+
+#### Run and debug
+
+-   **Run Configuration**
+
+    -   **Ctrl Shift F10** to run a python script. This will open the Run tool window at the bottom. **Shift Escape** to close this run window.
+
+    -   Editing run config by using the **Edit Configurations** action
+
+-   **Debugger Workflow:** Will come back to this as I become more familiar with function syntax in python. Note this [debugging in PyCharm tutorial](https://www.youtube.com/watch?v=sRGpvbhOhQs&t=2s&ab_channel=TechWithTim) from TechWithTim could also be a good reference.
+
+## TechWithTim's PyCharm tutorial
+
+-   **Refactoring Variable Names**: you can just use GUI by right clicking and selecting rename. This changes only within the scope of the currently selected variable.
+
+-   Keyboard Shortcuts:
+
+    -   **Ctrl F** to find
+
+    -   **Ctrl D** to duplicate line
+
+-   **✨Innate todo list:** Adding comments with the 'todo' keyword will automatically populate a to-do list in the Project tool window which links to do messages with file location and line numbers ETC. Seems very useful for small to do lists (sub commit level tasks!).
+
+-   ✨**Surround with (Ctrl Alt T):** will create a list of common expressions (ifelse, try-except)...
 
 ## 

@@ -49,6 +49,6 @@ Here is my reference for installation of [PyCharm](https://www.youtube.com/watch
 
 VS code's combinations of Prettier and Live Server and their UI features (color input for CSS) makes it an excellent tool for front end development. Have experience will stick with it. If my VM get resource starved I might consider going to something lightweight like sublime.
 
-### GitHub Desktop 
+### GitHub Desktop
 
 I hate command line. Feel having GUI reduces the learning curve of Git. GitHub Desktop has worked well in the past for me. See instructions for installing [from terminal here](https://gist.github.com/berkorbay/6feda478a00b0432d13f1fc0a50467f1)
