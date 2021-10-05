@@ -1,0 +1,46 @@
+---
+title: 'Next.js Crashcourse: Main Project'
+author: Ran Li
+date: '2021-10-05'
+slug: next-js-crashcourse-main-project
+categories:
+  - React
+tags:
+  - Next.js
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-05T16:58:59-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+In the basic section we covered file based routing system of Next.js including creating pages, dynamic pages and linking between pages. But Next. js has a lot to offer when it comes to pre-rendering pages and fetching data for these pages. For this next segment we will dump the news article project and create something new. We create the next.js project
+
+    npx create-next-app
+
+then copied some standard React components built by [Academin](https://github.com/mschwarzmueller/nextjs-course-code/tree/9c9e9f19b1bd27605fb4ccdca2d1a0ebb5c3a802); note, since this course is focusing on Next.js he uses basic React components that is assumed we know how to build (we will revisit this afterwards). Copying effectively over writing the public, components, style, and pages folder with what is in his repository. Let's start our dev node server to make sure everything is working.
+
+    npm run dev
+
+Well we see a 404 which makes sense because we don't have pages.
+
+# Project Introduction
+
+This project is a meet up page which
+
+-   create new meet ups (send to backend database)
+
+-   fetch and display meet ups
+
+-   detail page for a given meet up to fetch and display details of each meet up (dynamic page where the unique identifier is in the URL).
+
+We practice touche don the basic project (file base routing) and add new features of Next.js which relates to data fetching but also related to blending backend and frontend code which sends request to a backend API which we will build.
+
+## Set up Pages
+
+We will need three pages a starting page which displays meetups, new meetup page which allows to add new meetup and meetup details page ([commit](https://github.com/rl627/next-js-course-academind/commit/c82ef6c96505b39f234283531ef7516ec94659dd)).

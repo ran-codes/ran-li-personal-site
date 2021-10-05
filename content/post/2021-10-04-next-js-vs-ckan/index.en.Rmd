@@ -1,14 +1,14 @@
 ---
 title: CKAN vs Next.js
 author: Ran Li
-date: '2021-10-05'
+date: '2021-10-04'
 slug: ckan-vs-nextjs
 categories: []
 tags: []
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2021-10-05T09:52:30-04:00'
+lastmod: '2021-10-04T09:52:30-04:00'
 featured: no
 image:
   caption: ''
