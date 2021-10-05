@@ -91,8 +91,11 @@ $ sudo pg_isready
 
 # pgAdmin {#pgAdmin}
 
-GUI (Graphical User interface) dramatically reduce the learning curve of most technologies compared to CLI (Command Line Interface). For this project I think the best approach is to use a GUI to initially set up and once we need to write queries from Django or stuff that needs automating we can go back CLI. pgAdmin is the most popular Postgres GUI; pgAdmin installation instructions on Linux can be found [here](https://www.pgadmin.org/download/pgadmin-4-apt/).
+GUI (Graphical User interface) dramatically reduce the learning curve of most technologies compared to CLI (Command Line Interface). For this project I think the best approach is to use a GUI to initially set up and once we need to write queries from Django or stuff that needs automating we can go back CLI. pgAdmin is the most popular Postgres GUI. Belowe we will install and setup pgAdmin on Ubunutu 20.04 LTS ([ref](https://tecadmin.net/how-to-install-pgadmin4-on-ubuntu-20-04/)).
 
-<https://www.tecmint.com/install-postgresql-and-pgadmin-in-ubuntu/>
+    $ curl https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo apt-key add -
+    $ sudo sh -c 'echo "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/focal pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'
+    $ sudo apt update
+    $ sudo apt install pgadmin4 
 
-<https://www.pgadmin.org/download/pgadmin-4-apt/>
+At this point you would have installed pgadmin4. Now we need to set up the pgAdmin dashbaord and connect it to our local Postgres server.
