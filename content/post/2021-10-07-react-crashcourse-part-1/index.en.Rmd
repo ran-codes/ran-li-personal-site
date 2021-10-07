@@ -1,0 +1,167 @@
+---
+title: React Crashcourse (Part 1): Introduction to React and ES6
+author: Ran Li
+date: '2021-10-07'
+slug: react-crashcourse-part-1
+categories:
+  - React
+tags:
+  - React
+  - Course Notes
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-07T15:24:36-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+Academind's Next.js crash course teaches how Next.js adds production features to React.js; so I will be taking a crash course in React.js as well. This series will serve as notes for [Academind's React course on Udemy](Next.js). Since I want to get working quickly I will go the concise route in this course: section 1 (Why React), section2 (ES6 JS refresher) and Section 29 (Summary/Core Features).
+
+# Section 1: Why React?
+
+Mobile apps and desktop apps feel very "reactive": Thing happen instantly, you don't wait for new pages to load or actions to start.
+
+Traditionally in web apps you click a link and wait for a new page to load. You click a button and wait for some action to complete. Cycle: Click -\> Request to Server \> Server sends HTML \> Render. This request and response cycle is what gives the unresponsive feel and is what we can break up with JS; React is a JS framework designed for to create responsive websites. Essentially, JS is an imperative approach (builds everything from scratch) React is a higher level 'declarative component focused approach' which makes making complex interfaces much easier. React builds Single-Page-Applications (SPAs).
+
+React itself focuses on UI components and doesn't cover some features (such as Routing) therefore it needs some other third park packages. Angular/Vue.js while is component focused it has more features (such as Routing) thus is much more comprehensive; may be overkill for smaller projects.
+
+# Section 2: Next Gen JavaScript (ES6) Refresher
+
+ES6 brings new syntax that make code more readable compared older versions of JS; the idea being write less, do more. React was built with ES6. Below are some key features of ES6 that are used in working with React.
+
+### **let** & **const** replaces **var** 
+
+### **ES6 Arrow Functions**
+
+Shorter syntax for writing function and keeps the scope of the this keyword
+
+``` {.javascript}
+function returnMe(name){
+   return name;
+}
+
+const callMe = name => name
+```
+
+### Modules
+
+In modern JS projects (particularly React), we split code across multiple JS files (called modules); this helps manage complexity by keeping each module focused on a certain task and scope. To access functionality in another file, you need to `export` (to make it available) and to `import` (to get access) statements. Exports can be named or default; React components are default exports from its parent module.
+
+### Classes
+
+Classes are blueprints for JS objects; they replace A class can have both properties and methods.
+
+``` {.javascript}
+class Person {
+  name: "Max";
+  printMyName = () => {console.log(this.name)}
+}
+```
+
+You can instantiate an object based on a class using the 'new' keyword.
+
+``` {.javascript}
+const person = new Person();
+person.printMyName();
+```
+
+We can use **inheritance** when using classes
+
+``` {.javascript}
+class Human {
+  species = 'human';
+}
+
+class Person extends Human {
+  name: "Max";
+  printMyName = () => {console.log(this.name)}
+}
+
+const person = new Person();
+console.log(person.species);
+```
+
+You can extend classes based on a parent class; note, that children classes new the super() keyword in its constructor. Classes are one of two ways to make components in React. Classes are just blueprints for JS objects and are very comparable to constructor function here inheritance is comparable to prototypes.
+
+### Spread & Rest Operator (`…`)
+
+Both use the same syntax of three dots. When we spread we use it to pull elements out of an array (=\> split array into a list of its elements) or pull the properties out of an object.
+
+``` {.javascript}
+// Pulling elements from an Array
+const oldArray = [1, 2, 3];
+const newArray = [...oldArray, 4, 5];
+
+// Pulling properties out of an object
+const oldObject = {
+  name: 'Max'
+};
+const newObject = {
+  ...oldObject,
+  age: 28
+}
+```
+
+**The spread operator is useful for cloning (creating immutable copies) of arrays and objects.** In JS there are two types of objects: 1) numbers, strings and Booleans are primitive types; meaning whenever you store a variable in another variable it will make a copy 2) Object and arrays are reference types; meaning, storing an array variable as another variable it will only stored as a reference (pointer to first).
+
+### Destructuring
+
+Destructuring allows you to easily access the values of arrays or objects and assign them to variables.
+
+``` {.javascript}
+// Destructuring an Array
+const array = [1, 2, 3];
+const [a, b] = array;
+console.log(`{a}, {b}`); // prints '1, 2'
+
+// Destructuring an Object
+const myObj = {
+  name: 'Max',
+  age: 28
+}
+const {name} = myObj;
+console.log(name); // prints 'Max'
+console.log(age); //prints undefined
+```
+
+Destructuring is very useful when working with function arguments. For example:
+
+``` {.javascript}
+const printName = (personObj) => {
+  console.log(personObj.name);
+}
+console.log({name: 'Max', age: 28});
+
+// Refactor with destructuring
+consy printName = ({name}) => {
+  console.log(name)
+}
+console.log({name: 'Max', age: 28});
+```
+
+Same results, but with destructuring , we simply pull the `name` property and store it in a variable named `name` which we can use in the function body.
+
+### Array Methods
+
+This isn't ES6 but array methods will be used heavily. Here are the ones any JS developer should know well:
+
+-   **map():** takes a function as an argument which is executed on each element in the array and **returns a real new array** (not pointer).
+
+-   **find():** takes an conditional as an argument and **returns the value of the first element** in the array that satisfies the provided testing function.
+
+-   **findIndex():** takes a testing function as an argument and **returns the index of the first element** in the array that satisfies the provided condition.
+
+-   **filter():** takes a testing function as an argument and **creates a new array** with all elements that pass the test.
+
+-   **reduce():** takes a reducer callback function as an argument and executes this reducer on each element of the array, passing the return value of the calculation on the preceding event. **The final result of running the reducer across all elements of the array is a single value**.
+
+-   **concat():** takes an Array as a argument and merges the supplied Array with the original Array; the **result is a new merged array.**
+
+-   **slice():** method **returns a shallow copy of a portion of an array** into a new array object selected from `start` to `end` (`end` not included) where `start` and `end` represent the index of items in that array. The original array will not be modified. (similar to dplyr)
+
+-   **splice():** method changes the contents of an array by removing or replacing existing elements and/or adding new elements in place. It's like a mutable version of slice()

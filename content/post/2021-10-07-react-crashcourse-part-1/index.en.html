@@ -1,0 +1,135 @@
+---
+title: React Crashcourse (Part 1)
+author: Ran Li
+date: '2021-10-07'
+slug: react-crashcourse-part-1
+categories:
+  - React
+tags:
+  - React
+  - Course Notes
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-07T15:24:36-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>Academind’s Next.js crash course teaches how Next.js adds production features to React.js; so I will be taking a crash course in React.js as well. This series will serve as notes for <a href="Next.js">Academind’s React course on Udemy</a>. Since I want to get working quickly I will go the concise route in this course: section 1 (Why React), section2 (ES6 JS refresher) and Section 29 (Summary/Core Features).</p>
+<div id="section-1-why-react" class="section level1">
+<h1>Section 1: Why React?</h1>
+<p>Mobile apps and desktop apps feel very “reactive”: Thing happen instantly, you don’t wait for new pages to load or actions to start.</p>
+<p>Traditionally in web apps you click a link and wait for a new page to load. You click a button and wait for some action to complete. Cycle: Click -&gt; Request to Server &gt; Server sends HTML &gt; Render. This request and response cycle is what gives the unresponsive feel and is what we can break up with JS; React is a JS framework designed for to create responsive websites. Essentially, JS is an imperative approach (builds everything from scratch) React is a higher level ‘declarative component focused approach’ which makes making complex interfaces much easier. React builds Single-Page-Applications (SPAs).</p>
+<p>React itself focuses on UI components and doesn’t cover some features (such as Routing) therefore it needs some other third park packages. Angular/Vue.js while is component focused it has more features (such as Routing) thus is much more comprehensive; may be overkill for smaller projects.</p>
+</div>
+<div id="section-2-next-gen-javascript-es6-refresher" class="section level1">
+<h1>Section 2: Next Gen JavaScript (ES6) Refresher</h1>
+<p>ES6 brings new syntax that make code more readable compared older versions of JS; the idea being write less, do more. React was built with ES6. Below are some key features of ES6 that are used in working with React.</p>
+<div id="let-const-replaces-var" class="section level3">
+<h3><strong>let</strong> &amp; <strong>const</strong> replaces <strong>var</strong></h3>
+</div>
+<div id="es6-arrow-functions" class="section level3">
+<h3><strong>ES6 Arrow Functions</strong></h3>
+<p>Shorter syntax for writing function and keeps the scope of the this keyword</p>
+<pre class="javascript"><code>function returnMe(name){
+   return name;
+}
+
+const callMe = name =&gt; name</code></pre>
+</div>
+<div id="modules" class="section level3">
+<h3>Modules</h3>
+<p>In modern JS projects (particularly React), we split code across multiple JS files (called modules); this helps manage complexity by keeping each module focused on a certain task and scope. To access functionality in another file, you need to <code>export</code> (to make it available) and to <code>import</code> (to get access) statements. Exports can be named or default; React components are default exports from its parent module.</p>
+</div>
+<div id="classes" class="section level3">
+<h3>Classes</h3>
+<p>Classes are blueprints for JS objects; they replace A class can have both properties and methods.</p>
+<pre class="javascript"><code>class Person {
+  name: &quot;Max&quot;;
+  printMyName = () =&gt; {console.log(this.name)}
+}</code></pre>
+<p>You can instantiate an object based on a class using the ‘new’ keyword.</p>
+<pre class="javascript"><code>const person = new Person();
+person.printMyName();</code></pre>
+<p>We can use <strong>inheritance</strong> when using classes</p>
+<pre class="javascript"><code>class Human {
+  species = &#39;human&#39;;
+}
+
+class Person extends Human {
+  name: &quot;Max&quot;;
+  printMyName = () =&gt; {console.log(this.name)}
+}
+
+const person = new Person();
+console.log(person.species);</code></pre>
+<p>You can extend classes based on a parent class; note, that children classes new the super() keyword in its constructor. Classes are one of two ways to make components in React. Classes are just blueprints for JS objects and are very comparable to constructor function here inheritance is comparable to prototypes.</p>
+</div>
+<div id="spread-rest-operator" class="section level3">
+<h3>Spread &amp; Rest Operator (<code>…</code>)</h3>
+<p>Both use the same syntax of three dots. When we spread we use it to pull elements out of an array (=&gt; split array into a list of its elements) or pull the properties out of an object.</p>
+<pre class="javascript"><code>// Pulling elements from an Array
+const oldArray = [1, 2, 3];
+const newArray = [...oldArray, 4, 5];
+
+// Pulling properties out of an object
+const oldObject = {
+  name: &#39;Max&#39;
+};
+const newObject = {
+  ...oldObject,
+  age: 28
+}</code></pre>
+<p><strong>The spread operator is useful for cloning (creating immutable copies) of arrays and objects.</strong> In JS there are two types of objects: 1) numbers, strings and Booleans are primitive types; meaning whenever you store a variable in another variable it will make a copy 2) Object and arrays are reference types; meaning, storing an array variable as another variable it will only stored as a reference (pointer to first).</p>
+</div>
+<div id="destructuring" class="section level3">
+<h3>Destructuring</h3>
+<p>Destructuring allows you to easily access the values of arrays or objects and assign them to variables.</p>
+<pre class="javascript"><code>// Destructuring an Array
+const array = [1, 2, 3];
+const [a, b] = array;
+console.log(`{a}, {b}`); // prints &#39;1, 2&#39;
+
+// Destructuring an Object
+const myObj = {
+  name: &#39;Max&#39;,
+  age: 28
+}
+const {name} = myObj;
+console.log(name); // prints &#39;Max&#39;
+console.log(age); //prints undefined</code></pre>
+<p>Destructuring is very useful when working with function arguments. For example:</p>
+<pre class="javascript"><code>const printName = (personObj) =&gt; {
+  console.log(personObj.name);
+}
+console.log({name: &#39;Max&#39;, age: 28});
+
+// Refactor with destructuring
+consy printName = ({name}) =&gt; {
+  console.log(name)
+}
+console.log({name: &#39;Max&#39;, age: 28});</code></pre>
+<p>Same results, but with destructuring , we simply pull the <code>name</code> property and store it in a variable named <code>name</code> which we can use in the function body.</p>
+</div>
+<div id="array-methods" class="section level3">
+<h3>Array Methods</h3>
+<p>This isn’t ES6 but array methods will be used heavily. Here are the ones any JS developer should know well:</p>
+<ul>
+<li><p><strong>map():</strong> takes a function as an argument which is executed on each element in the array and <strong>returns a real new array</strong> (not pointer).</p></li>
+<li><p><strong>find():</strong> takes an conditional as an argument and <strong>returns the value of the first element</strong> in the array that satisfies the provided testing function.</p></li>
+<li><p><strong>findIndex():</strong> takes a testing function as an argument and <strong>returns the index of the first element</strong> in the array that satisfies the provided condition.</p></li>
+<li><p><strong>filter():</strong> takes a testing function as an argument and <strong>creates a new array</strong> with all elements that pass the test.</p></li>
+<li><p><strong>reduce():</strong> takes a reducer callback function as an argument and executes this reducer on each element of the array, passing the return value of the calculation on the preceding event. <strong>The final result of running the reducer across all elements of the array is a single value</strong>.</p></li>
+<li><p><strong>concat():</strong> takes an Array as a argument and merges the supplied Array with the original Array; the <strong>result is a new merged array.</strong></p></li>
+<li><p><strong>slice():</strong> method <strong>returns a shallow copy of a portion of an array</strong> into a new array object selected from <code>start</code> to <code>end</code> (<code>end</code> not included) where <code>start</code> and <code>end</code> represent the index of items in that array. The original array will not be modified. (similar to dplyr)</p></li>
+<li><p><strong>splice():</strong> method changes the contents of an array by removing or replacing existing elements and/or adding new elements in place. It’s like a mutable version of slice()</p></li>
+</ul>
+</div>
+</div>
