@@ -1,5 +1,5 @@
 ---
-title: React Crashcourse (Part 1): Introduction to React and ES6
+title: 'React Crashcourse (Part 1): Introduction to React and ES6'
 author: Ran Li
 date: '2021-10-07'
 slug: react-crashcourse-part-1
@@ -20,21 +20,88 @@ image:
 projects: []
 ---
 
-Academind's Next.js crash course teaches how Next.js adds production features to React.js; so I will be taking a crash course in React.js as well. This series will serve as notes for [Academind's React course on Udemy](Next.js). Since I want to get working quickly I will go the concise route in this course: section 1 (Why React), section2 (ES6 JS refresher) and Section 29 (Summary/Core Features).
+Academind's Next.js crash course teaches how Next.js adds production features to React.js; so I will be taking a crash course in React.js as well. This series will serve as notes for [Academind's React course on Udemy](Next.js). Since I want to get working quickly I will go the concise route in this course: section 1 (Why React), section2 (ES6 JS refresher) and Section 29 (Summary/Core Features). I will cover these lessons in this React Crash course blog series.
 
-# Section 1: Why React?
+**This first blog cover two things:**
+
+-   **Introduce React**
+-   **Give a refresher on next generation JS/ES6 syntax that is commonly used in React**
+
+# React Introduction
+
+### **Why use React?**
 
 Mobile apps and desktop apps feel very "reactive": Thing happen instantly, you don't wait for new pages to load or actions to start.
 
-Traditionally in web apps you click a link and wait for a new page to load. You click a button and wait for some action to complete. Cycle: Click -\> Request to Server \> Server sends HTML \> Render. This request and response cycle is what gives the unresponsive feel and is what we can break up with JS; React is a JS framework designed for to create responsive websites. Essentially, JS is an imperative approach (builds everything from scratch) React is a higher level 'declarative component focused approach' which makes making complex interfaces much easier. React builds Single-Page-Applications (SPAs).
+Traditionally in web apps you click a link and wait for a new page to load. You click a button and wait for some action to complete. Cycle: Click -\> Request to Server -\> Server sends HTML -\> Render. This request and response cycle is what gives the unresponsive feel and is what we can break up with JS; React is a JS framework designed for to create responsive websites. Essentially, JS is an imperative approach (builds everything from scratch) React is a higher level 'declarative component focused approach' which makes making complex interfaces much easier. React builds Single-Page-Applications (SPAs).
 
 React itself focuses on UI components and doesn't cover some features (such as Routing) therefore it needs some other third park packages. Angular/Vue.js while is component focused it has more features (such as Routing) thus is much more comprehensive; may be overkill for smaller projects.
+
+### **React is all about "Components".**
+
+While we can build complex website with many events and dynamic components with vannilla JS, HTML and CSS in a declartive manner it is very complex. Thats why we use React, it makes building complex, interactive and reactive UI simpler; by declaritive programming it makes the process much fast (allows you to focus on the logic without worrying about every single event) and less error prone. **React is all about "Components".**
+
+Components are reusable building blocks (composed of HTML, CSS and JS) in your UI. In React we build these components and tell React how to compose them into the final UI. Components build on two programming concepts: 1) **Reusability** (don't repeat yourself) and 2) **Separation of Concerns** (Don't do too many things in one and the same place - function). Using components allows our codebase to be small and manageable; small spear units where each unit has a specific focus/concern split across multiple files making each concern easily maintainable.
+
+### Setting up a React project
+
+For this series I will be using Visual Studio Code as the IDE with the Prettier extension and node v14.17.0. Initialize a React act first navigate to a directory where you would like to create your project folder then initialize as follows.
+
+    npx create-react-app project1-basic-react
+
+Initialization takes a bit as Node will not only set up your folders structures for you but also download the required dependencies. To check everything is properly set up we can run our React app locally by navigating into our React project folder then use a node command
+
+    cd project1-basic-react
+    npm start
+
+Note, this effect is a live-server. So any changes made to you React project will automatically be translated to what you see in the local port. Now let's take a look at what files are in our start React app:
+
+-   package.json: details dependencies
+
+-   ./node_modules: Node.js installs dependencies as per package.json into those folder. We don't touch this folder.
+
+-   ./public: Includes the files need for React app: images, icons... ETC
+
+-   ./src: this folder contains the code we will be editing.
+
+Note, not all the default React app files are needed we remove a few see this [commit](https://github.com/rl627/udemy-react-js-academind/commit/d375f31232e0e761795359fbcded209c6f235681) for a minimized react application to start with.
+
+### Analyzing a Standard React Project
+
+``` {.javascript}
+import ReactDOM from 'react-dom';
+
+import './index.css';
+import App from './App';
+
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+🦀When importing from js file or node_modules you don't need to and shouldn't add .js in the path.
+
+Above is index.js. In React we write JS which direct React to build a UI. Index.js is essentially directions to how to make our root page (index.html). Note that there is some non-standard JS such as 1) the import CSS and 2) \`\<App/\>\` which looks like HTML code in JS; these only work because React transforms these before they get to browser. We import feature then call the ReactDom.render() function to render some JSX imported from App.js onto the 'root' id of index.html which can be found in /public.
+
+Let's examine App.js
+
+``` {.javascript}
+function App() {
+  return (
+    <div>
+      <h2>Let's get started!</h2>
+    </div>
+  );
+}
+
+export default App;
+```
+
+The HTML code is **JSX** a special implementation of HTML what works in JS due to React. App.js is a **React component:** a JS file which exports a JS function which returns JSX code which is use like an HTML element in index.js.
 
 # Section 2: Next Gen JavaScript (ES6) Refresher
 
 ES6 brings new syntax that make code more readable compared older versions of JS; the idea being write less, do more. React was built with ES6. Below are some key features of ES6 that are used in working with React.
 
-### **let** & **const** replaces **var** 
+### **let** & **const** replaces **var**
 
 ### **ES6 Arrow Functions**
 
