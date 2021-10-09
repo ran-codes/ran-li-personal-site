@@ -29,6 +29,8 @@ Academind's Next.js crash course teaches how Next.js adds production features to
 
 # React Introduction
 
+**Imperative programming you every step that needs to be taken to achieve a desired outcome. Declarative programming you define the desired outcome and let the library figure out the steps. React is a JS library which you to decoratively program highly complex, interactive and reactive user interfaces.**
+
 ### **Why use React?**
 
 Mobile apps and desktop apps feel very "reactive": Thing happen instantly, you don't wait for new pages to load or actions to start.
@@ -77,7 +79,7 @@ import App from './App';
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
-🦀When importing from js file or node_modules you don't need to and shouldn't add .js in the path.
+🦀When importing from js file or node_modules you don't need to and shouldn't add .js in the path 🦀
 
 Above is index.js. In React we write JS which direct React to build a UI. Index.js is essentially directions to how to make our root page (index.html). Note that there is some non-standard JS such as 1) the import CSS and 2) \`\<App/\>\` which looks like HTML code in JS; these only work because React transforms these before they get to browser. We import feature then call the ReactDom.render() function to render some JSX imported from App.js onto the 'root' id of index.html which can be found in /public.
 

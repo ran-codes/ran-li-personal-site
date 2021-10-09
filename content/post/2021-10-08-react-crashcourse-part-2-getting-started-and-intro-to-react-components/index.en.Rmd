@@ -1,0 +1,328 @@
+---
+title: 'React Crashcourse (Part 2): Getting Started and intro to React components'
+author: Ran Li
+date: '2021-10-08'
+slug: react-crashcourse-part-2-getting-started-and-intro-to-react-components
+categories:
+  - React
+tags:
+  - React
+  - Course Notes
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-08T13:35:41-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+**This blog (part 2 of the React Crash-course series) cover the following topics within the context of the course's first mini-project:**
+
+-   **React basics & Working with Components (Section 3)**
+-   **ETC**
+
+# Section 3: React basics & Working with Components
+
+In React we want to split our application into components for reputabilityand Separation **of Concerns**. So we will be building a lot of components. App.js is a special/root component which is rendered in index.js and should stay in root. All other components are either nested in App.js or within components in App.js; we build essentially a component tree where App.js is head of the tree. We build our first custom component and import/insert it into our root component in this [commit](https://github.com/rl627/udemy-react-js-academind/commit/5321bfa2fc5e4dfd243f4a81f9b19e555dfa0fae).
+
+🦀Create a ./components folder in your React project to contain the many many component source files you will write.🦀
+
+🦀The root component (App.js) needs to stay in root.🦀
+
+🦀Component file and function names should always start with capital letter. This allows react to differentiate JSX tags from HTML tags 🦀
+
+### Adding Some Complexity to Components
+
+We edit our custom component to be slightly more complex ([commit](https://github.com/rl627/udemy-react-js-academind/commit/92d2d6cb45b8e0098f56342adea9f57c9e31678c)).
+
+``` {.javascript}
+function ExpenseItem() {
+  return (
+    <div>
+      <div>May 3, 1932</div>
+      <div>
+        <h2>Car Insurance</h2>
+        <div>$333</div>
+      </div>
+    </div>
+    ) 
+}
+
+export default ExpenseItem;
+```
+
+🦀React components must only have one root element. So nest everything either in a div or a React Fragment 🦀
+
+### Styling Components
+
+🦀 **Creating a css file:** Next to style our components we add a css file with the same file name next to it in the ./component folder. Important: we need to import the css file in the appropriate module. 🦀
+
+🦀 **Importing css into module:** Next to style our components we add a css file with the same file name next to it in the ./component folder. Important: we need to import the css file in the appropriate module. 🦀
+
+🦀 **Defining CSS selectors/classes in JSX:** Note that JSX is different from HTML one of the key differences is that class names are defined with the **className** attribute in JSX (because calss is a reserved word in JS). 🦀
+
+After add a css file, we edit out first component to import and assign classNames for styling ([commit](https://github.com/rl627/udemy-react-js-academind/commit/2a810e214ce3c314c25e1d1256bf4b16ce1adc63))
+
+``` {.javascript}
+import './ExpenseItem.css';
+
+function ExpenseItem() {
+  return (
+    <div className="expense-item">
+      <div>May 3, 1932</div>
+      <div>
+        <h2>Car Insurance</h2>
+        <div>$333</div>
+      </div>
+    </div>
+  );
+}
+
+export default ExpenseItem;
+```
+
+### JS in JSX
+
+Components should be reusable; we want to define the HTML once and reuse it with new/dynamic data. Remember that JSX is a mix of HTML and JS; before we can do data fetching via JS lets first learn how to work with JS within JSX.
+
+🦀**We can run JS within JSX by using \`{ }\`** similiar to glue() in R or how we can run JS in backticks.
+
+``` {.javascript}
+import './ExpenseItem.css';
+
+function ExpenseItem() {
+  const expenseDate = new Date(2021, 2, 28);
+  const expenseTitle = 'Car Insurance';
+  const expenseAmount = 333;
+
+  return (
+    <div className="expense-item">
+      <div>{expenseDate.toISOString()}</div>
+      <div className="expense-item__description">
+        <h2>{expenseTitle}</h2>
+        <div className="expense-item__price">${expenseAmount}</div>
+      </div>
+    </div>
+  );
+}
+
+export default ExpenseItem;
+```
+
+Above we use JS variables in JS, this simple example demonstrate how we can potentially run JS to fetch data from a DB or transform data for use by a component.
+
+### Dynamic Data via arguments
+
+In JS or any language really, we make function reusable by passing arguments. React has this this same feature in components where we can pass variables vai '**Props'** to our components.
+
+🦀Like HTML elements can have attributes, our React component have attributes we can use these attributes to pass data to our components 🦀
+
+``` {.javascript}
+import ExpenseItem from "./components/ExpenseItem";
+
+function App() {
+  const expenses = [
+    {
+      id: 'e1',
+      title: 'Toilet Paper',
+      amount: 94.12,
+      date: new Date(2020, 7, 14),
+    },
+    { id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
+    {
+      id: 'e3',
+      title: 'Car Insurance',
+      amount: 294.67,
+      date: new Date(2021, 2, 28),
+    },
+    {
+      id: 'e4',
+      title: 'New Desk (Wooden)',
+      amount: 450,
+      date: new Date(2021, 5, 12),
+    },
+  ];
+  
+  return (
+    <div>
+      <h2>Let's get started!</h2>
+      <ExpenseItem
+        title={expenses[0].title}
+        amount={expenses[0].amount}
+        date={expenses[0].date}
+      />
+      <ExpenseItem
+        title={expenses[1].title}
+        amount={expenses[1].amount}
+        date={expenses[1].date}
+      />
+      <ExpenseItem
+        title={expenses[2].title}
+        amount={expenses[2].amount}
+        date={expenses[2].date}
+      />
+      <ExpenseItem
+        title={expenses[3].title}
+        amount={expenses[3].amount}
+        date={expenses[3].date}
+      />
+    </div>
+  );
+}
+
+export default App;
+```
+
+Above we pass data into our Components via attributes. Now that is only half, now we need to use these data in components. 🦀 **React will pass all these attributes to our component as an object with all of the received attributes as properties**; this object is often referred to as **props 🦀**Below we edit first component to use the data passed in via attributes.
+
+``` {.javascript}
+import './ExpenseItem.css';
+
+function ExpenseItem(props) {
+  return (
+    <div className="expense-item">
+      <div>{props.date.toISOString()}</div>
+      <div className="expense-item__description">
+        <h2>{props.title}</h2>
+        <div className="expense-item__price">${props.amount}</div>
+      </div>
+    </div>
+  );
+}
+
+export default ExpenseItem;
+```
+
+### Splitting Components into Multiple Files 
+
+Below we add some functionality (Date formatting) into our first component:
+
+``` {.javascript}
+import './ExpenseItem.css';
+
+function ExpenseItem(props) {
+  const month = props.date.toLocaleString('en-US', { month: 'long' });
+  const day = props.date.toLocaleString('en-US', { day: '2-digit' });
+  const year = props.date.getfullYear();
+
+  return (
+    <div className="expense-item">
+      <div>
+        <div>{month}</div>
+        <div>{day}</div>
+        <div>{year}</div>
+      </div>
+      <div className="expense-item__description">
+        <h2>{props.title}</h2>
+        <div className="expense-item__price">${props.amount}</div>
+      </div>
+    </div>
+  );
+}
+
+export default ExpenseItem;
+```
+
+It works, but notice as we add functionality it also increases the complexity of the code. In this case to increase maintainability **we need to separate our concerns.** We can split some functionality into its own component, namely the date formatting; we will create a second component ExpenseDate to do this:
+
+``` {.javascript}
+import './ExpenseDate.css';
+
+function ExpenseDate(props) {
+  const month = props.date.toLocaleString('en-US', { month: 'long' });
+  const day = props.date.toLocaleString('en-US', { day: '2-digit' });
+  const year = props.date.getFullYear();
+
+  return (
+      <div className="expense-date">
+        <div className="expense-date__month">{month}</div>
+        <div className="expense-date__day">{day}</div>
+        <div className="expense-date__year">{year}</div>
+      </div>
+  );
+}
+
+export default ExpenseDate;
+```
+
+Note we create and import a css file to style the calender like component. In our ExpenseItem component we just import and call this component, while funneling in the props data. The final product looks much nicer and the codebase has clear separation of concerns ([commit](https://github.com/rl627/udemy-react-js-academind/commit/d35b2a02f8ae56d1b44200c7212f539412f62eb4)).
+
+🦀How we type signals what type of code/file. Components always have capital first letter then camel case. One way to organize our css is that CSS classes should all be lower case separate by dashes and classes within a component should be indicated by "\_\_" as shown below 🦀
+
+``` {.css}
+.expense-date {
+  display: flex;
+  flex-direction: column;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 1px solid #ececec;
+  background-color: #2a2a2a;
+  color: white;
+  border-radius: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.expense-date__month {
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.expense-date__year {
+  font-size: 0.75rem;
+}
+
+.expense-date__day {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+```
+
+### "Composition" of "children props"
+
+Up until now we have only been passing attributes to our components (thus we can use self closing tags), but we can also pass HTML or other components as children props as below.
+
+``` {.javascript}
+<Card> <ExpenseList/> </Card>
+```
+
+This is particularly useful when we want to apply **separationg of concerns** when it comes to css styling.
+
+![](images/composition_figure.PNG){width="100"}
+
+For example for example see our current layout (snip above) we can see that many components (calendar, price, expense item and expense list) share a common card-like styling of rounded borders which is currently duplicated in css. We extract the shared styling of container divs into a seperate component.
+
+``` {.javascript}
+import "./Card.css";
+
+function Card(props) {
+  const classes = 'card ' + props.className;
+  return <div className={classes}>{props.children}</div>;
+}
+ 
+export default Card;
+```
+
+Not this component takes a special attribute of props **(props.children)** which is what ever is between the JSX tags when called. We extract duplicated css to Card.css. For these shell components it is important to append the passed in classNames to the component classes. Then in our other components we implement this shell component ([commit](https://github.com/rl627/udemy-react-js-academind/commit/806c93e8715c022afc3a2d29a5c0300ffdf6d184)) by replacing the div tags where we wanted to add card styling (psuedo-code below).
+
+``` {.javascript}
+// Original
+<Div className="expense-item">
+  Card Content
+</Div>
+
+// Shell component
+<Card className="expense-item">
+  Card Content
+</Card>
+```
+
+### Organizing Components File
+
+We can use sub folders in ./Component to group components of similar features for examples: a folder for UI or another folder for the expenses feature ([commit](https://github.com/rl627/udemy-react-js-academind/commit/90d341177ff506bc48c49731bdaf8da8f6ef5e24)). We just need to update the import directories when needed. Folder structure has no rule but use sub-folders/nesting as needed to keep everything organized
+
+🦀We can use arrow function to define components ([commit](https://github.com/rl627/udemy-react-js-academind/commit/80118ad0efa17e398c980886add37c09f7c7f720))🦀
