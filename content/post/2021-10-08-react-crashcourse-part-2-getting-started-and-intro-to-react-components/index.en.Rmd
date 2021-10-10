@@ -1,8 +1,8 @@
 ---
-title: 'React Crashcourse (Part 2): Getting Started and intro to React components'
+title: 'React Crashcourse (Part 2): React Core Functionality'
 author: Ran Li
 date: '2021-10-08'
-slug: react-crashcourse-part-2-getting-started-and-intro-to-react-components
+slug: react-crashcourse-part-2-react-core
 categories:
   - React
 tags:
@@ -23,7 +23,7 @@ projects: []
 **This blog (part 2 of the React Crash-course series) cover the following topics within the context of the course's first mini-project:**
 
 -   **React basics & Working with Components (Section 3)**
--   **ETC**
+-   **User Interactions & State (Section 4)**
 
 # Section 3: React basics & Working with Components
 
@@ -63,7 +63,7 @@ export default ExpenseItem;
 
 🦀 **Importing css into module:** Next to style our components we add a css file with the same file name next to it in the ./component folder. Important: we need to import the css file in the appropriate module. 🦀
 
-🦀 **Defining CSS selectors/classes in JSX:** Note that JSX is different from HTML one of the key differences is that class names are defined with the **className** attribute in JSX (because calss is a reserved word in JS). 🦀
+🦀 **Defining CSS selectors/classes in JSX:** Note that JSX is different from HTML one of the key differences is that class names are defined with the **className** attribute in JSX (because class is a reserved word in JS). 🦀
 
 After add a css file, we edit out first component to import and assign classNames for styling ([commit](https://github.com/rl627/udemy-react-js-academind/commit/2a810e214ce3c314c25e1d1256bf4b16ce1adc63))
 
@@ -197,7 +197,7 @@ function ExpenseItem(props) {
 export default ExpenseItem;
 ```
 
-### Splitting Components into Multiple Files 
+### Splitting Components into Multiple Files
 
 Below we add some functionality (Date formatting) into our first component:
 
@@ -326,3 +326,268 @@ Not this component takes a special attribute of props **(props.children)** which
 We can use sub folders in ./Component to group components of similar features for examples: a folder for UI or another folder for the expenses feature ([commit](https://github.com/rl627/udemy-react-js-academind/commit/90d341177ff506bc48c49731bdaf8da8f6ef5e24)). We just need to update the import directories when needed. Folder structure has no rule but use sub-folders/nesting as needed to keep everything organized
 
 🦀We can use arrow function to define components ([commit](https://github.com/rl627/udemy-react-js-academind/commit/80118ad0efa17e398c980886add37c09f7c7f720))🦀
+
+# User Interaction & State
+
+So far we covered basic React imperative declarations for a static UI; what about interactions? Here we cover
+
+-   Handling Events
+
+-   Updating UI & Working with "State"
+
+-   Closer look at Components and State
+
+### Listening to Events & Working with Event Handlers
+
+To learn about state and events, lets do a simple demo. Add a button to each ExpenseItem and change the title when it is clicked. Each HTML element has a set of events that can occur (for example the 'onClick' event is available for almost all elements).
+
+In React/JSX, the event available to each event can be called as an attribute which is then passed in a function that runs when the event occurs. Unlike the imperative approach where we have manually attach things, here we simply declare that we can to run clickHandler when this button is clicked! 😃
+
+``` {.javascript}
+<button onClick={clickHander}>Change Title</button>
+```
+
+🦀event hander functions should usually end with "Handler" e.g. functionNameHandler. 🦀
+
+### useState()
+
+``` {.javascript}
+const ExpenseItem = (props) => {
+
+  let title = props.title;
+
+  const clickHander = () => {console.log('clickHander')}
+
+  return (
+    <Card className="expense-item">
+      <ExpenseDate date={props.date} />
+      <div className="expense-item__description">
+        <h2>{title}</h2>
+        <div className="expense-item__price">${props.amount}</div>
+      </div>
+      <button onClick={clickHander}>Change Title</button>
+    </Card>
+  );
+}
+```
+
+We update our ExpenseItem component to have a click handler to should change title but why doesn't it work? React executes the tree of component functions called in index.js just once. While the function to update is there React doesn't run this code yet.
+
+🦀Regular variables in component functions such as title doesn't trigger reevaluation. **State** in React are special type of variable which if change leads to component function reevaluation
+
+🦀States are created with useState() function/hook. React functions/hooks must be called within component functions 🦀
+
+🦀useState() create an Array with two elements; 1value is the value it self, second element is the update function.
+
+Below we import useState(), the use destructuring with useState() to implement the reevaluation nd update of title.. Now upon click there is a change in state and this component function is reevaluated and updates! ([commit](https://github.com/rl627/udemy-react-js-academind/commit/3bd95804383eb67b94e623832070343c3f447a4f)).
+
+``` {.javascript}
+import { useState } from 'react';
+import Card from '../UI/Card';
+import ExpenseDate from './ExpenseDate';
+import './ExpenseItem.css';
+
+const ExpenseItem = (props) => {
+  
+  const [title, setTitle] = useState(props.title);
+
+  const clickHander = () => setTitle("New Title")
+
+  return (
+    <Card className="expense-item">
+      <ExpenseDate date={props.date} />
+      <div className="expense-item__description">
+        <h2>{title}</h2>
+        <div className="expense-item__price">${props.amount}</div>
+      </div>
+      <button onClick={clickHander}>Change Title</button>
+    </Card>
+  );
+}
+
+export default ExpenseItem;
+```
+
+**🦀If you have data which might change and where changes to that data should be reflected in the UI then you need state; because regular variables will not trigger reevaluation of the component function.🦀**
+
+### User Input
+
+Lets first create an Input section where users can create new Expense Items. We apply component basics to generate a user form in this [commit](https://github.com/rl627/udemy-react-js-academind/commit/6c7e1ff66e87c75849ad00098af4ec67d9363be0). Now want to be able to detect when there is a change in input.
+
+🦀Event handlers in component functions have access to event similar to vanilla JS eventListeners🦀
+
+🦀useState() allows use to store input data detached from the reevaluation life cycle of a component function🦀
+
+Below we use Event handlers and the useState() to store inputs in multiple multiples states in the ExpenseForm component function. ([commit](https://github.com/rl627/udemy-react-js-academind/commit/cca41b836efc29317f7afac122195c3d33b92fbb))
+
+``` {.javascript}
+import { useState } from 'react';
+import "./ExpenseForm.css";
+
+export default function ExpenseForm() {
+  const [enteredTitle, setEnteredTitle] = useState('');
+  const [enteredAmount, setEnteredAmount] = useState('');
+  const [enteredDate, setEnteredDate] = useState('');
+
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+   }
+  
+  const AmountChangeHandler = (event) => {
+    setEnteredAmount(event.target.value);
+  }
+
+  const DateChangeHandler = (event) => {
+      setEnteredDate(event.target.value);
+  };
+  
+  return (
+    <form className="new-expense__controls">
+      <div className="new-expense__control">
+        <label>Title</label>
+        <input type="text" onClick={titleChangeHandler} />
+      </div>
+      <div className="new-expense__control">
+        <label>Amount</label>
+        <input
+          type="number"
+          min="0.1"
+          step="0.01"
+          onClick={AmountChangeHandler}
+        />
+      </div>
+      <div className="new-expense__control">
+        <label>Date</label>
+        <input
+          type="date"
+          min="2019-01-01"
+          max="2022-12-31"
+          onClick={DateChangeHandler}
+        />
+      </div>
+      <div className="new-expense__actions">
+        <button type="submit">Add Expense</button>
+      </div>
+    </form>
+  );
+}
+```
+
+🦀When ever you update state and you depend on the previous state (e.g. a counter) **you should use special argument prevState to refer to the previous state in your updater**. 🦀
+
+This is because update isn't instant and you could potentially refer to an outdated State if you don't specify previous state. See below for
+
+``` {.javascript}
+setUserInput((prevState) => {
+  return {...prevState, enteredTitle: event.target.value}
+})
+```
+
+Now that we have stored data, we can deal with for submission but not that 🦀By default if a button in a form is clicked, that form will emit a form submission event which automatically reloads the page because the browser sends a request to the server hosting the web page. 🦀
+
+🦀State have two-way binding; we can not only listen to update but we can also pass new values back into the input 🦀
+
+Below we add an event handler to onSubmit for the form which does three things: 1) prevent default reload 2) gather the entered data 3) clear inputs using two way binding. ([commit](https://github.com/rl627/udemy-react-js-academind/commit/6ebed745e3da80a3c720d6971fd812f4a24655fc))
+
+``` {.javascript}
+import { useState } from 'react';
+import "./ExpenseForm.css";
+
+export default function ExpenseForm() {
+  const [enteredTitle, setEnteredTitle] = useState('');
+  const [enteredAmount, setEnteredAmount] = useState('');
+  const [enteredDate, setEnteredDate] = useState('');
+
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+   }
+  
+  const AmountChangeHandler = (event) => {
+    setEnteredAmount(event.target.value);
+  }
+
+  const DateChangeHandler = (event) => {
+      setEnteredDate(event.target.value);
+  };
+  
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const expenseData = {
+      title: enteredTitle,
+      amount: enteredAmount,
+      date: enteredDate
+    }
+
+    setEnteredTitle('');
+    setEnteredAmount('');
+    setEnteredDate('');
+
+    console.log(expenseData);
+  }
+
+  return (
+    <form onSubmit={submitHandler}>
+      <div className="new-expense__controls">
+        <div className="new-expense__control">
+          <label>Title</label>
+          <input
+            type="text"
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
+        </div>
+        <div className="new-expense__control">
+          <label>Amount</label>
+          <input
+            type="number"
+            min="0.1"
+            step="0.01"
+            value={enteredAmount}
+            onChange={AmountChangeHandler}
+          />
+        </div>
+        <div className="new-expense__control">
+          <label>Date</label>
+          <input
+            type="date"
+            min="2019-01-01"
+            max="2022-12-31"
+            value={enteredDate}
+            onChange={DateChangeHandler}
+          />
+        </div>
+        <div className="new-expense__actions">
+          <button type="submit">Add Expense</button>
+        </div>
+      </div>
+    </form>
+  );
+}
+```
+
+### Child-to-Parent Component Communication (Bottom-up)
+
+🦀"**Lifting State up**" is a pattern where we transfer state from child to parent by using props to receive a function a parent component which is called in the child component .🦀
+
+We can pass data from child to parent by passing a prop function from parent to child which uses data collected by the child While props are used to pass data downward from parent to child (Top-to-Bottom), we now wanted to pass data from Child to Parent (bottom-up) from data collected in ExpenseForm to App.
+
+Here we lift the state of the submitted data from the ExpenseForm component to NewExpense to App ([commit](https://github.com/rl627/udemy-react-js-academind/commit/d1c1388b05b041d5624c1feed017caf459291496)).
+
+### Assignment 2
+
+Goal is to add a filter component add into the ExpenseList component which allows us to filter by Years. This data (selected year) should be lifted up to the ExpenseList component and stored as state. We accomplish this by doing the following ([commit](https://github.com/rl627/udemy-react-js-academind/commit/eb6b8bd5dfeac3be7751311ff53ee621a1631872)):
+
+-   Creating the ExpensesFilter Component + CSS
+
+-   From the ExpenseList (Parent) we pass to ExpensesFilter (Child) a prop function which uses the selected year. This prop function will update a state create to track year.
+
+-   Within ExpensesFilter (Child), we add a onChanrge handler for the selection element which calls the prop function from the parent.
+
+-   Optional: use two-way binding to ensure that the selected filter Year value is the current state.
+
+### Vocab review (Controlled/Uncontrolled, Stateful/Stateless)
+
+In this module we learned two-way binding and thus create what React calls a **'Controlled Component**'; a controlled component uses a value which is not only passed on to the parent component but also received from the parent component. For example, ExpensesFilter's year value is passed onto and received from ExpenseList; here, both the set value and the selected value is not part of ExpensesFilter and the real logic resides in the parent component.
+
+**Presentation/dumb/stateless** vs **Stateful/Smart** components. We have components that manage state (such as ExpenseForm which manages the input state) then we have other components which don't have any internal state (ExpenseItem) and are just there to display data. In most React apps we have more stateless components than Stateful. Because we want to split our application into small reusable pieces; most pieces will focus on outputting things and only a few components which manage state; these state are distributed via props.
