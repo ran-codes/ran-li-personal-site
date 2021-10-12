@@ -22,10 +22,14 @@ projects: []
 
 
 
-<p><strong>This blog (part 2 of the React Crash-course series) cover the following topics within the context of the course’s first mini-project:</strong></p>
+<p><strong>This blog (part 2 of the React Crash-course series) cover the core teaching modules:</strong></p>
 <ul>
-<li><strong>React basics &amp; Working with Components (Section 3)</strong></li>
-<li><strong>User Interactions &amp; State (Section 4)</strong></li>
+<li><strong>Section 3: React basics &amp; Working with Components</strong></li>
+<li><strong>Section 4: User Interaction &amp; State</strong></li>
+<li><strong>Section 5: Rendering Lists &amp; Dynamic Content</strong></li>
+<li><strong>Section 6: Styling React Components</strong></li>
+<li><strong>Section 7: Debugging React</strong></li>
+<li><strong>Section 8: Complete Practice Project</strong></li>
 </ul>
 <div id="section-3-react-basics-working-with-components" class="section level1">
 <h1>Section 3: React basics &amp; Working with Components</h1>
@@ -277,8 +281,8 @@ export default Card;</code></pre>
 <p>🦀We can use arrow function to define components (<a href="https://github.com/rl627/udemy-react-js-academind/commit/80118ad0efa17e398c980886add37c09f7c7f720">commit</a>)🦀</p>
 </div>
 </div>
-<div id="user-interaction-state" class="section level1">
-<h1>User Interaction &amp; State</h1>
+<div id="section-4-user-interaction-state" class="section level1">
+<h1>Section 4: User Interaction &amp; State</h1>
 <p>So far we covered basic React imperative declarations for a static UI; what about interactions? Here we cover</p>
 <ul>
 <li><p>Handling Events</p></li>
@@ -501,5 +505,409 @@ export default function ExpenseForm() {
 <h3>Vocab review (Controlled/Uncontrolled, Stateful/Stateless)</h3>
 <p>In this module we learned two-way binding and thus create what React calls a <strong>’Controlled Component</strong>’; a controlled component uses a value which is not only passed on to the parent component but also received from the parent component. For example, ExpensesFilter’s year value is passed onto and received from ExpenseList; here, both the set value and the selected value is not part of ExpensesFilter and the real logic resides in the parent component.</p>
 <p><strong>Presentation/dumb/stateless</strong> vs <strong>Stateful/Smart</strong> components. We have components that manage state (such as ExpenseForm which manages the input state) then we have other components which don’t have any internal state (ExpenseItem) and are just there to display data. In most React apps we have more stateless components than Stateful. Because we want to split our application into small reusable pieces; most pieces will focus on outputting things and only a few components which manage state; these state are distributed via props.</p>
+</div>
+</div>
+<div id="section-5-rendering-lists-dynamic-content" class="section level1">
+<h1>Section 5: Rendering Lists &amp; Dynamic Content</h1>
+<p>Right now our app is still functionally static. The expense items rendered are hard coded using components and don’t react to CRUD or filtering.</p>
+<div id="rendering-lists-of-data" class="section level3">
+<h3>Rendering Lists of Data</h3>
+<p>Since we pass in an array of data from App to Expenses we can use map to generate a dynamic array of Items based on the data passed in.</p>
+<pre class="javascript"><code>import { useState } from &#39;react&#39;;
+import Card from &#39;../UI/Card&#39;;
+import ExpensesFilter from &#39;./ExpensesFilter&#39;;
+import ExpenseItem from &#39;./ExpenseItem&#39;;
+import &#39;./Expenses.css&#39;;
+
+const ExpenseList = (props) =&gt; {
+  const [expenseYear, setExpenseYear] = useState(&#39;2022&#39;);
+
+  const filterChangeHandler = (year) =&gt; {
+    setExpenseYear(year);
+    console.log(year);
+  };
+
+  return (
+    &lt;Card className=&quot;expenses&quot;&gt;
+      &lt;ExpensesFilter onFilterChange={filterChangeHandler} defaultYear={expenseYear} /&gt;
+      {props.items.map(expenseItem =&gt; 
+         &lt;ExpenseItem
+           title={expenseItem.title}
+           amount={expenseItem.amount}
+           date={expenseItem.date}
+         /&gt;
+      )}
+    &lt;/Card&gt;
+  );
+};
+
+export default ExpenseList;</code></pre>
+<p>🦀Array.map() can be used to generate dynamic content within JSX. Arrays of JSX are jsut evaluated next to each other 🦀</p>
+</div>
+<div id="stateful-lists" class="section level3">
+<h3>Stateful Lists</h3>
+<p>To make our list Dyanamic we need to make the data that is passed to the stateless Expense Component into stateful data; any changes to the data will reevaluate the list. Since we have already lifted the state of new expenses to App we will manage the state of data there (<a href="https://github.com/rl627/udemy-react-js-academind/commit/73923081a117ffd13590110b374d46b6c14ad72c">commit</a>).</p>
+<pre class="javascript"><code>const App = () =&gt; {
+  const [expenses, setExpenses] = useState(dummyExpenses);
+
+  const addExpenseHandler = expense =&gt; {
+    setExpenses((prevExpenses) =&gt; [expense, ...prevExpenses] );
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Let&#39;s get started!&lt;/h2&gt;
+      &lt;ExpenseForm onAddExpenseHandler={addExpenseHandler} /&gt;
+      &lt;ExpenseList items={expenses} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre>
+<p>🦀to make some a display component interactive simple make the data passed to it stateful 🦀</p>
+</div>
+<div id="keys-in-stateful-lists" class="section level3">
+<h3>Keys in Stateful Lists</h3>
+<p>By default when React renders stateful lists it will render the whole array upon re-evaluation even if there is lets say only a single item added. This is not performant, doesn’t take into account order, and could lead to bugs when other components depend on the state of the order in these lists. We can let React deal with these issues by adding a special key attribute with a unique identifier to our returned items. (<a href="https://github.com/rl627/udemy-react-js-academind/commit/d73388f8f6fcce514c5272dbfc6e24c4eda822ae">commit</a>)</p>
+<pre class="javascript"><code> return (
+    &lt;Card className=&quot;expenses&quot;&gt;
+      &lt;ExpensesFilter onFilterChange={filterChangeHandler} defaultYear={expenseYear} /&gt;
+      {props.items.map(function (expenseItem) {
+        return (
+          &lt;ExpenseItem
+            key={expenseItem.id}
+            title={expenseItem.title}
+            amount={expenseItem.amount}
+            date={expenseItem.date}
+          /&gt;
+        );
+        }
+      )}
+    &lt;/Card&gt;
+  );</code></pre>
+<p>🦀key attribute is absolutedly necesary when returning items into a Stateful list. For performance and bug prevention.🦀</p>
+</div>
+<div id="assignment-3" class="section level3">
+<h3>Assignment 3</h3>
+<p><strong>Challenge</strong>: Make the year filter work</p>
+<p>The idea is to keep things simple, since we have Year as a state in Expenses.js we should just transform the props data before it gets passed to the rendering function.</p>
+<pre class="javascript"><code>import { useState } from &#39;react&#39;;
+import Card from &#39;../UI/Card&#39;;
+import ExpensesFilter from &#39;./ExpensesFilter&#39;;
+import ExpenseItem from &#39;./ExpenseItem&#39;;
+import &#39;./Expenses.css&#39;;
+
+const ExpenseList = (props) =&gt; {
+  const [expenseYear, setExpenseYear] = useState(&#39;2022&#39;);
+
+  const filterChangeHandler = (year) =&gt; {
+    setExpenseYear(year);
+  };
+
+  const filteredExpenses = props.items.filter(expense =&gt; {
+   return expense.date.getFullYear().toString() === expenseYear;
+  })
+  
+  return (
+    &lt;Card className=&quot;expenses&quot;&gt;
+      &lt;ExpensesFilter onFilterChange={filterChangeHandler} defaultYear={expenseYear} /&gt;
+      {filteredExpenses.map(function (expenseItem) {
+        return (
+          &lt;ExpenseItem
+            key={expenseItem.id}
+            title={expenseItem.title}
+            amount={expenseItem.amount}
+            date={expenseItem.date}
+          /&gt;
+        );
+        }
+      )}
+    &lt;/Card&gt;
+  );
+};
+
+export default ExpenseList;</code></pre>
+</div>
+<div id="render-content-conditionally" class="section level3">
+<h3>Render Content Conditionally</h3>
+<p>Here if we have no data for 2022 we just show nothing but we should show a message about no data.</p>
+<p>🦀we can use terneray expressions, the &amp;&amp; syntax or ifelse conditions to conditionally render JSX. This logic can be in the component function or the return snippet. 🦀</p>
+<pre class="javascript"><code>import { useState } from &#39;react&#39;;
+import Card from &#39;../UI/Card&#39;;
+import ExpensesFilter from &#39;./ExpensesFilter&#39;;
+import ExpenseItem from &#39;./ExpenseItem&#39;;
+import &#39;./Expenses.css&#39;;
+
+const ExpenseList = (props) =&gt; {
+  const [expenseYear, setExpenseYear] = useState(&#39;2022&#39;);
+
+  const filterChangeHandler = (year) =&gt; {
+    setExpenseYear(year);
+  };
+
+  const filteredExpenses = props.items.filter(expense =&gt; {
+   return expense.date.getFullYear().toString() === expenseYear;
+  })
+  
+  let expensesContent =   &lt;h1&gt;No ExpenseItem&lt;/h1&gt;
+  if (filteredExpenses.length !== 0) {
+    expensesContent = filteredExpenses.map(function (expenseItem) {
+      return (
+        &lt;ExpenseItem
+          key={expenseItem.id}
+          title={expenseItem.title}
+          amount={expenseItem.amount}
+          date={expenseItem.date}
+        /&gt;
+      );
+    });
+  }
+    return (
+      &lt;Card className=&quot;expenses&quot;&gt;
+        &lt;ExpensesFilter
+          onFilterChange={filterChangeHandler}
+          defaultYear={expenseYear}
+        /&gt;
+        {expensesContent}
+      &lt;/Card&gt;
+    );
+};
+
+export default ExpenseList;</code></pre>
+<p>🦀we can store JSX in variables outside the returned JSX snippet; this allows us to move logic other places within the component function and maintain a lean returned JSX snippet (<a href="https://github.com/rl627/udemy-react-js-academind/commit/c4407b1c5908b1d8fc22f0f303ad3628d422dc17">commit</a>) 🦀</p>
+<p>Note this is quite bloated, we can indeed transfer the list of expenses and associated logic to its own component (<a href="https://github.com/rl627/udemy-react-js-academind/commit/f1d7051bc926ac1078bb81b8471c8413ba77363d">commit</a>).</p>
+</div>
+<div id="assignment-3-1" class="section level3">
+<h3>Assignment 3</h3>
+<p>make the add expense form conditionally rendered; alternative is a “Add New Expense” Form. My solution (<a href="https://github.com/rl627/udemy-react-js-academind/commit/7ee608e754736634b74ada3508cc26e6dc6be035">commit</a>) involved conditionally rendering the form (either the form or the “Add New Expense” button) based on a new state called show form. This state is configured by the handler functions attached to onClick to all the three buttons. It works but the ExpenseForm component is now quite bloated!</p>
+<p>My initial conernw as right! As per the instructor solution there was one key thing I did wrong… I should not have managed the show form state within ExpenseForm but rather within NewExpense. Expense form is component concern wiith sut the form….whether we display the form or not should be managed int he NewExpense overall componet. So our answer was correct but not elegant… see here for the refactor (<a href="https://github.com/rl627/udemy-react-js-academind/commit/8f9a3696d8d70d38e14b821f21b83414a206dd77">commit</a>).</p>
+</div>
+<div id="chart" class="section level3">
+<h3>Chart</h3>
+<p>Lets set up our overall Chart component</p>
+<pre class="javascript"><code>import ChartBar from &#39;./chart-bar&#39;;
+import &quot;./Chart.css&quot;;
+
+export default function Chart(props) {
+  return (
+    &lt;div className=&quot;chart&quot;&gt;
+      {props.dataPoints.map(dataPoint =&gt;
+        &lt;ChartBar
+          key={dataPoint.label}
+          value={dataPoint.value}
+          maxValue={null}
+          label={dataPoint.label} /&gt;
+      )}
+    &lt;/div&gt;
+  )
+}</code></pre>
+<p>Next lets get make the individual bars; we used dynamic stlying to contorl how much of the bar (via height) is filled</p>
+<p>🦀 Style attirbutes work differently when buidling a React componet; style wants an object; the dynamic JS styling is a object. We use {{ }}. Note for css properties that have a dash just use camel case🦀</p>
+<p>Here is the final ChartBar compoennt which calculated the bar height from the passed in value and max value then returns a JSX snippet with dynamic styling for height.</p>
+<pre class="javascript"><code>import &#39;./ChartBar.css&#39;
+
+export default function ChartBar(props) {
+  let barFillHeight = &quot;0%&quot;;
+  if (props.max &gt; 0) {
+    barFillHeight = Math.round((props.value / props.max) * 100) + &#39;%&#39;;
+  }
+  return (
+    &lt;div className=&quot;chart-bar&quot;&gt;
+      &lt;div className=&quot;chart-bar__inner&quot;&gt;
+        &lt;div className=&quot;chart-bar__fill&quot; style={{height: barFillHeight}}&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div className=&quot;chart-bar__label&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+<p>Finally we need to set up the data and pass it to Chart component. We set these things up in ExpenseChart.</p>
+<pre class="javascript"><code>import Chart from &#39;../Chart/Chart&#39;;
+
+export default function ExpensesChart(props) {
+  const chartDataPoints = [
+    { label: &#39;Jan&#39;, value: 0 },
+    { label: &#39;Feb&#39;, value: 0 },
+    { label: &#39;Mar&#39;, value: 0 },
+    { label: &#39;Apr&#39;, value: 0 },
+    { label: &#39;May&#39;, value: 0 },
+    { label: &#39;Jun&#39;, value: 0 },
+    { label: &#39;Jul&#39;, value: 0 },
+    { label: &#39;Aug&#39;, value: 0 },
+    { label: &#39;Sep&#39;, value: 0 },
+    { label: &#39;Oct&#39;, value: 0 },
+    { label: &#39;Nov&#39;, value: 0 },
+    { label: &#39;Dec&#39;, value: 0 },
+  ];
+
+  for (const expense of props.expenses) {
+    const expenseMonth = expense.date.getMonth();
+    chartDataPoints[expenseMonth].value += expense.amount;
+  }
+  
+  return &lt;Chart dataPoints={chartDataPoints} /&gt;;
+}</code></pre>
+<p>We then add the ExpenseChart component to our Expenses Component; adding appropraite imports and it should work! (<a href="https://github.com/rl627/udemy-react-js-academind/commit/1dee3528c89ac31be1962e606d8e56e27b0e74b4">commit</a>)</p>
+<p>🦀Use for in to loop over an object; Use for of to loop over an array 🦀</p>
+</div>
+</div>
+<div id="section-6-styling-react-components" class="section level1">
+<h1>Section 6: Styling React Components</h1>
+<p>🦀Importing CSS files via ‘import style.css’ in a compone twill lead that CSS being applied globally and not scope to that compoment!! 🦀</p>
+<div id="inline-dynamic-styling" class="section level3">
+<h3>Inline Dynamic Styling</h3>
+<p>Inline style conditional on input validitity is implemented with {{}} below (<a href="https://github.com/rl627/udemy-react-js-academind/commit/0fc74f7b5864b8d5c1bd841adab318dea6ebc54a">commit</a>).</p>
+<pre class="javascript"><code>import React, { useState } from &#39;react&#39;;
+
+import Button from &#39;../../UI/Button/Button&#39;;
+import &#39;./CourseInput.css&#39;;
+
+const CourseInput = props =&gt; {
+  const [enteredValue, setEnteredValue] = useState(&#39;&#39;);
+  const [isValid, setIsValid] = useState(true);
+
+  const goalInputChangeHandler = event =&gt; {
+    if (event.target.value.trim().length&gt;0){setIsValid(true);}
+    setEnteredValue(event.target.value);
+  };
+
+  const formSubmitHandler = event =&gt; {
+    event.preventDefault();
+    if (enteredValue.trim().length === 0) {
+      setIsValid(false);
+      return;
+    }
+    props.onAddGoal(enteredValue);
+  };
+
+  return (
+    &lt;form onSubmit={formSubmitHandler}&gt;
+      &lt;div className=&quot;form-control&quot;&gt;
+        &lt;label style={{ color: !isValid ? &#39;red&#39; : &#39;black&#39; }}&gt;Course Goal&lt;/label&gt;
+        &lt;input
+          style={{
+            borderColor: !isValid ? &#39;red&#39; : &#39;#ccc&#39;,
+            background: !isValid ? &#39;salmon&#39; : &#39;transparent&#39;,
+          }}
+          type=&quot;text&quot;
+          onChange={goalInputChangeHandler}
+        /&gt;
+      &lt;/div&gt;
+      &lt;Button type=&quot;submit&quot;&gt;Add Goal&lt;/Button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default CourseInput;</code></pre>
+</div>
+<div id="setting-css-classes-dyanmically" class="section level3">
+<h3>Setting CSS classes dyanmically</h3>
+<p>🦀It is better to set style via classes as inline code is hard to maintain and overwrites all other css. Below we implement dynamic classes.🦀</p>
+<p>(commit)</p>
+<pre class="javascript"><code>import React, { useState } from &#39;react&#39;;
+
+import Button from &#39;../../UI/Button/Button&#39;;
+import &#39;./CourseInput.css&#39;;
+
+const CourseInput = props =&gt; {
+  const [enteredValue, setEnteredValue] = useState(&#39;&#39;);
+  const [isValid, setIsValid] = useState(true);
+
+  const goalInputChangeHandler = event =&gt; {
+    if (event.target.value.trim().length&gt;0){setIsValid(true);}
+    setEnteredValue(event.target.value);
+  };
+
+  const formSubmitHandler = event =&gt; {
+    event.preventDefault();
+    if (enteredValue.trim().length === 0) {
+      setIsValid(false);
+      return;
+    }
+    props.onAddGoal(enteredValue);
+  };
+
+  return (
+    &lt;form onSubmit={formSubmitHandler}&gt;
+      &lt;div className={`form-control ${!isValid ? &#39;invalid&#39; : &#39;&#39;}`}&gt;
+        &lt;label&gt;Course Goal&lt;/label&gt;
+        &lt;input type=&quot;text&quot; onChange={goalInputChangeHandler} /&gt;
+      &lt;/div&gt;
+      &lt;Button type=&quot;submit&quot;&gt;Add Goal&lt;/Button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default CourseInput;</code></pre>
+</div>
+<div id="css-modules-scope-css-to-components" class="section level3">
+<h3>CSS Modules: Scope CSS to components</h3>
+<p>To avoid conflicts in css classes, it better to scope css to where they should be applied.</p>
+<p>🦀CSS file should be saved with ending of <code>.module.css'</code>🦀</p>
+<p>🦀Need to import the css file differently that default: <code>import styles from './styles.css'</code>🦀</p>
+<p>🦀when we refer to scoepd css class we call use the desired name as proprties in the imported styles object 🦀</p>
+<pre class="javascript"><code>import React from &#39;react&#39;;
+
+import styles from &#39;./Button.module.css&#39;;
+
+const Button = props =&gt; {
+  return (
+    &lt;button type={props.type} className={styles.button} onClick={props.onClick}&gt;
+      {props.children}
+    &lt;/button&gt;
+  );
+};
+
+export default Button;</code></pre>
+<p>In the HTML, these scoped classes are given a unique hash which represents the scope. We can refactor CourseInput.js with css modules: 1) rename the css file with .module.css 2) update the import statment in CourseInput,js 3) update the dyanmic className to reflect the module css syntax.</p>
+<p>🦀Media queries work as usual in css modules 🦀</p>
+<pre class="javascript"><code>/* Media query for larger devises */
+@media (min-width: 768px) {
+  .button {
+    width: auto;
+  }
+}</code></pre>
+</div>
+</div>
+<div id="section-7-debugging-react" class="section level1">
+<h1>Section 7: Debugging React</h1>
+<p>🦀VS Code and extension (e.g. ES-lint) will pick up some errors 🦀</p>
+<p>🦀React Dev Tools is useful to visualize the React application as well as allow you modify hooks/states to test your application 🦀</p>
+</div>
+<div id="section-8-complete-practice-project" class="section level1">
+<h1>Section 8: Complete Practice Project</h1>
+<p>Learned a lot so far. This is this is first major practice project where we build things from scratch. One thing I have learned is that well thought out and designed module organization can save a lot of actual effort coding. The ‘Features’ section will document the features in this project.</p>
+<div id="features" class="section level3">
+<h3>Features</h3>
+<ul>
+<li><p>Input Form</p>
+<ul>
+<li><p><span class="ul">Username</span>: text input</p></li>
+<li><p><span class="ul">Age (Years)</span>: numeric input</p></li>
+<li><p><span class="ul">Add User:</span> submit button</p>
+<ul>
+<li><p><span class="ul">Invalid input</span>: <span class="ul">Please enter a valid name and age (non-empty values).</span></p>
+<ul>
+<li><p>Shows this validation modal if invalid username or age</p></li>
+<li><p><span class="ul">Okay:</span> button for closing modal</p></li>
+<li><p>Modal can be close if clicked outside of modal</p></li>
+</ul></li>
+<li><p><span class="ul">Invalid input</span>: <span class="ul">Please enter a valid age (&gt; 0).</span></p></li>
+<li><p>If we add a user successfully, the values are reset.</p></li>
+</ul></li>
+</ul></li>
+<li><p>User List: just displays the name and age in boxes.example: “Max (31 years old)”</p></li>
+</ul>
+<p>It seems that these features could be implemented with the following components</p>
+<ul>
+<li><p>./UI/Card</p></li>
+<li><p>NewUser/NewUser</p></li>
+<li><p>NewUser/InvalidModal</p></li>
+<li><p>UserList/UserList</p></li>
+</ul>
+<p>A stateful data object will be maintained in App.js where data will be lifted into from NewUser and will be passed down to UserList for dynamic rendering of the output. The modal will have conditionally rendered content based on the test conditions of the inputs. Workflow: 1) initiating project and create UI/Card 2) develop NewUser component 3) UserList.</p>
+</div>
+<div id="design" class="section level3">
+<h3>Design</h3>
+<p>the ‘Design’ section describes how I will organize my component tree (how many modules, which will be stateful and which will be controlled…ETC).</p>
 </div>
 </div>
