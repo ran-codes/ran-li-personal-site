@@ -793,7 +793,7 @@ Note this is quite bloated, we can indeed transfer the list of expenses and asso
 
 make the add expense form conditionally rendered; alternative is a "Add New Expense" Form. My solution ([commit](https://github.com/rl627/udemy-react-js-academind/commit/7ee608e754736634b74ada3508cc26e6dc6be035)) involved conditionally rendering the form (either the form or the "Add New Expense" button) based on a new state called show form. This state is configured by the handler functions attached to onClick to all the three buttons. It works but the ExpenseForm component is now quite bloated!
 
-My initial conernw as right! As per the instructor solution there was one key thing I did wrong... I should not have managed the show form state within ExpenseForm but rather within NewExpense. Expense form is component concern wiith sut the form....whether we display the form or not should be managed int he NewExpense overall componet. So our answer was correct but not elegant... see here for the refactor ([commit](https://github.com/rl627/udemy-react-js-academind/commit/8f9a3696d8d70d38e14b821f21b83414a206dd77)).
+My initial concern as right! As per the instructor solution there was one key thing I did wrong... I should not have managed the show form state within ExpenseForm but rather within NewExpense. Expense form is component concern with out the form....whether we display the form or not should be managed int he NewExpense overall component. So our answer was correct but not elegant... see here for the refactor ([commit](https://github.com/rl627/udemy-react-js-academind/commit/8f9a3696d8d70d38e14b821f21b83414a206dd77)).
 
 ### Chart
 
@@ -818,11 +818,11 @@ export default function Chart(props) {
 }
 ```
 
-Next lets get make the individual bars; we used dynamic stlying to contorl how much of the bar (via height) is filled
+Next lets get make the individual bars; we used dynamic styling to control how much of the bar (via height) is filled
 
-🦀 Style attirbutes work differently when buidling a React componet; style wants an object; the dynamic JS styling is a object. We use {{ }}. Note for css properties that have a dash just use camel case🦀
+🦀 Style attributes work differently when building a React component; style wants an object; the dynamic JS styling is a object. We use {{ }}. Note for css properties that have a dash just use camel case🦀
 
-Here is the final ChartBar compoennt which calculated the bar height from the passed in value and max value then returns a JSX snippet with dynamic styling for height.
+Here is the final ChartBar component which calculated the bar height from the passed in value and max value then returns a JSX snippet with dynamic styling for height.
 
 ``` {.javascript}
 import './ChartBar.css'
@@ -873,7 +873,7 @@ export default function ExpensesChart(props) {
 }
 ```
 
-We then add the ExpenseChart component to our Expenses Component; adding appropraite imports and it should work! ([commit](https://github.com/rl627/udemy-react-js-academind/commit/1dee3528c89ac31be1962e606d8e56e27b0e74b4))
+We then add the ExpenseChart component to our Expenses Component; adding appropriate imports and it should work! ([commit](https://github.com/rl627/udemy-react-js-academind/commit/1dee3528c89ac31be1962e606d8e56e27b0e74b4))
 
 🦀Use for in to loop over an object; Use for of to loop over an array 🦀
 
@@ -1047,6 +1047,8 @@ Learned a lot so far. This is this is first major practice project where we buil
 
 -   User List: just displays the name and age in boxes.example: "Max (31 years old)"
 
+### Design
+
 It seems that these features could be implemented with the following components
 
 -   ./UI/Card
@@ -1059,6 +1061,20 @@ It seems that these features could be implemented with the following components
 
 A stateful data object will be maintained in App.js where data will be lifted into from NewUser and will be passed down to UserList for dynamic rendering of the output. The modal will have conditionally rendered content based on the test conditions of the inputs. Workflow: 1) initiating project and create UI/Card 2) develop NewUser component 3) UserList.
 
-### Design
+### Implementation
 
-the 'Design' section describes how I will organize my component tree (how many modules, which will be stateful and which will be controlled...ETC).
+😃Well... done coding that! I had fun! React is such a elegant implementation of JS and I love organizing code into modules. I ended with the following components:
+
+-   UI/Card.js
+
+-   UI/Button.js
+
+-   NewUser/NewUserInput/NewUserInput.js
+
+-   NewUser/InvalidModal/InvalidModal.js
+
+-   UserList/UserList
+
+😢While everything was relatively straightfoward. One JS rule caused a bug that took a while to diagnose. **THERE ARE NO IMPLICITY RETURNS IN JS FUNCTION!!!** So used to implicit returns in R. One of my components just was returning things... 😢
+
+🌮But overall, I was able to code this practice project by myself pretty smoothly! This ends the core fundamentals of React sections and thus this blog post!🍾

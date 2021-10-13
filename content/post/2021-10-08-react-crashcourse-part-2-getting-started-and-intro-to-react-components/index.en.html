@@ -680,7 +680,7 @@ export default ExpenseList;</code></pre>
 <div id="assignment-3-1" class="section level3">
 <h3>Assignment 3</h3>
 <p>make the add expense form conditionally rendered; alternative is a “Add New Expense” Form. My solution (<a href="https://github.com/rl627/udemy-react-js-academind/commit/7ee608e754736634b74ada3508cc26e6dc6be035">commit</a>) involved conditionally rendering the form (either the form or the “Add New Expense” button) based on a new state called show form. This state is configured by the handler functions attached to onClick to all the three buttons. It works but the ExpenseForm component is now quite bloated!</p>
-<p>My initial conernw as right! As per the instructor solution there was one key thing I did wrong… I should not have managed the show form state within ExpenseForm but rather within NewExpense. Expense form is component concern wiith sut the form….whether we display the form or not should be managed int he NewExpense overall componet. So our answer was correct but not elegant… see here for the refactor (<a href="https://github.com/rl627/udemy-react-js-academind/commit/8f9a3696d8d70d38e14b821f21b83414a206dd77">commit</a>).</p>
+<p>My initial concern as right! As per the instructor solution there was one key thing I did wrong… I should not have managed the show form state within ExpenseForm but rather within NewExpense. Expense form is component concern with out the form….whether we display the form or not should be managed int he NewExpense overall component. So our answer was correct but not elegant… see here for the refactor (<a href="https://github.com/rl627/udemy-react-js-academind/commit/8f9a3696d8d70d38e14b821f21b83414a206dd77">commit</a>).</p>
 </div>
 <div id="chart" class="section level3">
 <h3>Chart</h3>
@@ -701,9 +701,9 @@ export default function Chart(props) {
     &lt;/div&gt;
   )
 }</code></pre>
-<p>Next lets get make the individual bars; we used dynamic stlying to contorl how much of the bar (via height) is filled</p>
-<p>🦀 Style attirbutes work differently when buidling a React componet; style wants an object; the dynamic JS styling is a object. We use {{ }}. Note for css properties that have a dash just use camel case🦀</p>
-<p>Here is the final ChartBar compoennt which calculated the bar height from the passed in value and max value then returns a JSX snippet with dynamic styling for height.</p>
+<p>Next lets get make the individual bars; we used dynamic styling to control how much of the bar (via height) is filled</p>
+<p>🦀 Style attributes work differently when building a React component; style wants an object; the dynamic JS styling is a object. We use {{ }}. Note for css properties that have a dash just use camel case🦀</p>
+<p>Here is the final ChartBar component which calculated the bar height from the passed in value and max value then returns a JSX snippet with dynamic styling for height.</p>
 <pre class="javascript"><code>import &#39;./ChartBar.css&#39;
 
 export default function ChartBar(props) {
@@ -746,7 +746,7 @@ export default function ExpensesChart(props) {
   
   return &lt;Chart dataPoints={chartDataPoints} /&gt;;
 }</code></pre>
-<p>We then add the ExpenseChart component to our Expenses Component; adding appropraite imports and it should work! (<a href="https://github.com/rl627/udemy-react-js-academind/commit/1dee3528c89ac31be1962e606d8e56e27b0e74b4">commit</a>)</p>
+<p>We then add the ExpenseChart component to our Expenses Component; adding appropriate imports and it should work! (<a href="https://github.com/rl627/udemy-react-js-academind/commit/1dee3528c89ac31be1962e606d8e56e27b0e74b4">commit</a>)</p>
 <p>🦀Use for in to loop over an object; Use for of to loop over an array 🦀</p>
 </div>
 </div>
@@ -897,6 +897,9 @@ export default Button;</code></pre>
 </ul></li>
 <li><p>User List: just displays the name and age in boxes.example: “Max (31 years old)”</p></li>
 </ul>
+</div>
+<div id="design" class="section level3">
+<h3>Design</h3>
 <p>It seems that these features could be implemented with the following components</p>
 <ul>
 <li><p>./UI/Card</p></li>
@@ -906,8 +909,17 @@ export default Button;</code></pre>
 </ul>
 <p>A stateful data object will be maintained in App.js where data will be lifted into from NewUser and will be passed down to UserList for dynamic rendering of the output. The modal will have conditionally rendered content based on the test conditions of the inputs. Workflow: 1) initiating project and create UI/Card 2) develop NewUser component 3) UserList.</p>
 </div>
-<div id="design" class="section level3">
-<h3>Design</h3>
-<p>the ‘Design’ section describes how I will organize my component tree (how many modules, which will be stateful and which will be controlled…ETC).</p>
+<div id="implementation" class="section level3">
+<h3>Implementation</h3>
+<p>😃Well… done coding that! I had fun! React is such a elegant implementation of JS and I love organizing code into modules. I ended with the following components:</p>
+<ul>
+<li><p>UI/Card.js</p></li>
+<li><p>UI/Button.js</p></li>
+<li><p>NewUser/NewUserInput/NewUserInput.js</p></li>
+<li><p>NewUser/InvalidModal/InvalidModal.js</p></li>
+<li><p>UserList/UserList</p></li>
+</ul>
+<p>😢While everything was relatively straightfoward. One JS rule caused a bug that took a while to diagnose. <strong>THERE ARE NO IMPLICITY RETURNS IN JS FUNCTION!!!</strong> So used to implicit returns in R. One of my components just was returning things… 😢</p>
+<p>🌮But overall, I was able to code this practice project by myself pretty smoothly! This ends the core fundamentals of React sections and thus this blog post!🍾</p>
 </div>
 </div>
