@@ -1,0 +1,91 @@
+---
+title: 'React Crashcourse (Part 3): Selected topics'
+author: Ran Li
+date: '2021-10-12'
+slug: react-crashcourse-part-3-selected-topics
+categories:
+  - React
+tags:
+  - React
+  - Course Notes
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-10-12T21:17:42-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+We have learned the very core fundamentals of React but there is still bunch more to learn. The upcoming modules and project should fill in most of the knowledge gaps needed to build our POC data port; importantly, sideEffects, state management, HTTP Requests, Authentication, deployment and lastly Next.js.
+
+# Section 9: Fragments, Protals & "Refs"
+
+### "Div Soup"
+
+🦀JSX can only return a parent element. We usually solve this by wraping our stuff in a div tag, but this leads a DOM saturated with these unnecessary wrapper divs aka "\<div\> Soup"; downsides: 1) rendering unnecessary elements is not performant and 2) could cause css issues in nested styling 🦀
+
+### React Fragments
+
+🦀React fragments are a hook for a wrapper element to satisfy the JSX requirement of returning a single parent element but doesn't render extra div's in the DOM. See below for implementation. 🦀
+
+``` {.javascript}
+import { Fragment } from 'react';
+
+function App() {
+  return (
+    <Fragment>
+      My App
+    </Fragment>
+  )
+}
+
+export default App;
+```
+
+### React Portals
+
+``` {.javascript}
+<section>
+  <h2> Some content... </h2>
+  <div class = "my-modal">
+     <h2> Modal Content </h2>
+  </div>
+  <p>Other Content</p>
+</section>
+```
+
+In the example above demonstrates a semantic problem where overlays elements (modals, siderawers, dialogues) should not be deeply nested in the DOM. **Semantically** and from a "clean HTML" perceptive having this nested modal isn't idea. It is an **overlay to the entire page!**
+
+🦀React allows us a way to keep our JSX but specify to render these overlay elements else on the DOM via **React Portals**. 1) We first specify in index.html a div tag with a specific id (e.g. "overlay-root") where want our overlay component to render to. 2) we modify the component to create the portal in React/React-dom as per module 104 in academind's course 🦀
+
+The pseudo-result would be; semantically much better.
+
+``` {.javascript}
+<div class = "my-modal">
+  <h2> Modal Content </h2>
+</div>
+<section>
+  <h2> Some content... </h2>
+  <p>Other Content</p>
+</section>
+```
+
+### Refs
+
+🦀Refs can be used to access DOM elements within component functions. One useful application is to get input value data from inputs that don't need to be stateful (saves quite a bit of code). While we can do DOM manipulation on refs it isn't best practice; the exception for being resetting input values! Details view module 105 of academind's course 🦀
+
+# Section 10: Advanced - Side Effects, Reducers, Context API
+
+### "Effect" aka "Side Effect"
+
+🦀This is probably mentioned before but. **A hook is just a special React function that can run inside component functions.**🦀
+
+🦀React's main job is to render UI and react to user input via JSX, State, Props. **Side effects are anything else (ex. storing data in browser storage, sending HTTP requests to backend servers, setting/managing timers 🦀**
+
+🦀Since a component function is a function; it runs top to bottom **every state change/reevaluation** **therefore these 'side effect' tasks must happen outside of the normal component evaluation** and render cycle - since they might block/delay rendering (e.g. Http request) 🦀
+
+🦀**The useEffect() hook allows us to handle side effects within component functions.** 🦀
