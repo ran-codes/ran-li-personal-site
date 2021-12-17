@@ -7,3 +7,6 @@ blogdown.serve_site.startup = F,
   blogdown.author = "Ran Li", 
   blogdown.ext = ".Rmarkdown",     
   blogdown.subdir = "post"     )
+
+# Load Blogodnw
+library(blogdown)

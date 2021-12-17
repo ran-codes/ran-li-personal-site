@@ -76,6 +76,131 @@ export default App;</code></pre>
 <p>🦀This is probably mentioned before but. <strong>A hook is just a special React function that can run inside component functions.</strong>🦀</p>
 <p>🦀React’s main job is to render UI and react to user input via JSX, State, Props. <strong>Side effects are anything else (ex. storing data in browser storage, sending HTTP requests to backend servers, setting/managing timers 🦀</strong></p>
 <p>🦀Since a component function is a function; it runs top to bottom <strong>every state change/reevaluation</strong> <strong>therefore these ‘side effect’ tasks must happen outside of the normal component evaluation</strong> and render cycle - since they might block/delay rendering (e.g. Http request) 🦀</p>
-<p>🦀<strong>The useEffect() hook allows us to handle side effects within component functions.</strong> 🦀</p>
+<p>🦀<strong>The useEffect() allows to run code only when certain dependencies change.</strong> <strong>It runs after the JSX has rendered and doesn’t run again until dependencies change.</strong> 🦀</p>
+<p>The demo project is a psuedo-log-in form which loses status when we click refresh. Can we store data somewhere it persists beyond the reload. using State to implement this leads to infinite loops. Below we implement storage of log in status on local storage and use useEffect() function to set the log-in state only once at app mounting; since it has no dependencies it only triggers on mounting and never again.</p>
+<p>🦀useEffect() is commonly used to run things at page loading 🦀</p>
+<pre class="javascript"><code>import React, { useState, useEffect } from &#39;react&#39;;
+
+import Login from &#39;./components/Login/Login&#39;;
+import Home from &#39;./components/Home/Home&#39;;
+import MainHeader from &#39;./components/MainHeader/MainHeader&#39;;
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() =&gt; {
+    const storedUserLoggedInInformation = localStorage.getItem(&#39;isLoggedIn&#39;);
+    if (storedUserLoggedInInformation === &#39;1&#39;) { setIsLoggedIn(true);}
+  }, [])
+
+
+  const loginHandler = (email, password) =&gt; {
+    // We should of course check email and password
+    // But it&#39;s just a dummy/ demo anyways
+    localStorage.setItem(&#39;isLoggedIn&#39;, &#39;1&#39;);
+    setIsLoggedIn(true);
+  };
+
+  const logoutHandler = () =&gt; {
+    localStorage.removeItem(&#39;isLoggedIn&#39;);
+    setIsLoggedIn(false);
+  };
+
+  return (
+    &lt;React.Fragment&gt;
+      &lt;MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} /&gt;
+      &lt;main&gt;
+        {!isLoggedIn &amp;&amp; &lt;Login onLogin={loginHandler} /&gt;}
+        {isLoggedIn &amp;&amp; &lt;Home onLogout={logoutHandler} /&gt;}
+      &lt;/main&gt;
+    &lt;/React.Fragment&gt;
+  );
+}
+
+export default App;</code></pre>
+<p>🦀useEffect() is often used rerun logic when some data (state/prop) changes 🦀</p>
+<p>Below we demonstrate useEffect with some dependencies to manage the passwordIsValid state. Note that we use side e</p>
+<pre class="javascript"><code>import React, { useState, useEffect } from &#39;react&#39;;
+
+import Card from &#39;../UI/Card/Card&#39;;
+import classes from &#39;./Login.module.css&#39;;
+import Button from &#39;../UI/Button/Button&#39;;
+
+const Login = (props) =&gt; {
+  const [enteredEmail, setEnteredEmail] = useState(&#39;&#39;);
+  const [emailIsValid, setEmailIsValid] = useState();
+  const [enteredPassword, setEnteredPassword] = useState(&#39;&#39;);
+  const [passwordIsValid, setPasswordIsValid] = useState();
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  useEffect(() =&gt; {
+    setFormIsValid(
+      enteredEmail.includes(&#39;@&#39;) &amp;&amp; enteredPassword.trim().length &gt; 6
+    );
+  }, [enteredEmail, enteredPassword]);
+
+  const emailChangeHandler = (event) =&gt; {
+    setEnteredEmail(event.target.value);
+  };
+
+  const passwordChangeHandler = (event) =&gt; {
+    setEnteredPassword(event.target.value);
+  };
+
+  const validateEmailHandler = () =&gt; {
+    setEmailIsValid(enteredEmail.includes(&#39;@&#39;));
+  };
+
+  const validatePasswordHandler = () =&gt; {
+    setPasswordIsValid(enteredPassword.trim().length &gt; 6);
+  };
+
+  const submitHandler = (event) =&gt; {
+    event.preventDefault();
+    props.onLogin(enteredEmail, enteredPassword);
+  };
+
+  return (
+    &lt;Card className={classes.login}&gt;
+      &lt;form onSubmit={submitHandler}&gt;
+        &lt;div
+          className={`${classes.control} ${
+            emailIsValid === false ? classes.invalid : &#39;&#39;
+          }`}
+        &gt;
+          &lt;label htmlFor=&quot;email&quot;&gt;E-Mail&lt;/label&gt;
+          &lt;input
+            type=&quot;email&quot;
+            id=&quot;email&quot;
+            value={enteredEmail}
+            onChange={emailChangeHandler}
+            onBlur={validateEmailHandler}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div
+          className={`${classes.control} ${
+            passwordIsValid === false ? classes.invalid : &#39;&#39;
+          }`}
+        &gt;
+          &lt;label htmlFor=&quot;password&quot;&gt;Password&lt;/label&gt;
+          &lt;input
+            type=&quot;password&quot;
+            id=&quot;password&quot;
+            value={enteredPassword}
+            onChange={passwordChangeHandler}
+            onBlur={validatePasswordHandler}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div className={classes.actions}&gt;
+          &lt;Button type=&quot;submit&quot; className={classes.btn} disabled={!formIsValid}&gt;
+            Login
+          &lt;/Button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+    &lt;/Card&gt;
+  );
+};
+
+export default Login;</code></pre>
 </div>
 </div>

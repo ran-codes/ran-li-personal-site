@@ -88,4 +88,500 @@ The pseudo-result would be; semantically much better.
 
 🦀Since a component function is a function; it runs top to bottom **every state change/reevaluation** **therefore these 'side effect' tasks must happen outside of the normal component evaluation** and render cycle - since they might block/delay rendering (e.g. Http request) 🦀
 
-🦀**The useEffect() hook allows us to handle side effects within component functions.** 🦀
+🦀**The useEffect() allows to run code only when certain dependencies change.** **It runs after the JSX render cycle and doesn't run again until dependencies change.** 🦀
+
+The demo project is a psuedo-log-in form which loses status when we click refresh. Can we store data somewhere it persists beyond the reload. using State to implement this leads to infinite loops. Below we implement storage of log in status on local storage and use useEffect() function to set the log-in state only once at app mounting; since it has no dependencies it only triggers on mounting and never again.
+
+🦀useEffect() is commonly used to run things at page loading 🦀
+
+``` {.javascript}
+import React, { useState, useEffect } from 'react';
+
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
+    if (storedUserLoggedInInformation === '1') { setIsLoggedIn(true);}
+  }, [])
+
+
+  const loginHandler = (email, password) => {
+    // We should of course check email and password
+    // But it's just a dummy/ demo anyways
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <React.Fragment>
+      <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+      <main>
+        {!isLoggedIn && <Login onLogin={loginHandler} />}
+        {isLoggedIn && <Home onLogout={logoutHandler} />}
+      </main>
+    </React.Fragment>
+  );
+}
+
+export default App;
+```
+
+🦀useEffect() is often used rerun logic when some data (state/prop) changes. 🦀
+
+🦀the cleanup function in useEffect runs before the state function (non-return code in useEffect) or when the element is removed from DOM but not the first time that the useEffect() is run. One good use to to implement debouncing for http requests depended on some input. 🦀
+
+Below we demonstrate useEffect with some dependencies to manage the passwordIsValid state ([commit](https://github.com/rl627/udemy-react-js-academind/commit/eea202aec06a28301c3d49a31f2bf2dc887f62af)). We also use a cleanup function to implement a debouncing for our cleanup function (so that it only runs after the user has stopped typing). This is done by clearing the identifier returned by setTimeout() in the return function; and the typing timer reset upon every triggering of our dependencies - aka form input key stroke ([commit](https://github.com/rl627/udemy-react-js-academind/commit/7f0d215b8f033688fe6e69b20566c8086724f711)).
+
+``` {.javascript}
+import React, { useState, useEffect } from 'react';
+
+import Card from '../UI/Card/Card';
+import classes from './Login.module.css';
+import Button from '../UI/Button/Button';
+
+const Login = (props) => {
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [emailIsValid, setEmailIsValid] = useState();
+  const [enteredPassword, setEnteredPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState();
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  useEffect(() => {
+    const indentifier = setTimeout(() => {
+       setFormIsValid(
+         enteredEmail.includes('@') && enteredPassword.trim().length > 6
+       );
+    }, 500)
+
+    return (() => {
+      clearTimeout(indentifier);
+    })
+  }, [enteredEmail, enteredPassword]);
+
+  const emailChangeHandler = (event) => {
+    setEnteredEmail(event.target.value);
+  };
+
+  const passwordChangeHandler = (event) => {
+    setEnteredPassword(event.target.value);
+  };
+
+  const validateEmailHandler = () => {
+    setEmailIsValid(enteredEmail.includes('@'));
+  };
+
+  const validatePasswordHandler = () => {
+    setPasswordIsValid(enteredPassword.trim().length > 6);
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    props.onLogin(enteredEmail, enteredPassword);
+  };
+
+  return (
+    <Card className={classes.login}>
+      <form onSubmit={submitHandler}>
+        <div
+          className={`${classes.control} ${
+            emailIsValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="email">E-Mail</label>
+          <input
+            type="email"
+            id="email"
+            value={enteredEmail}
+            onChange={emailChangeHandler}
+            onBlur={validateEmailHandler}
+          />
+        </div>
+        <div
+          className={`${classes.control} ${
+            passwordIsValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={enteredPassword}
+            onChange={passwordChangeHandler}
+            onBlur={validatePasswordHandler}
+          />
+        </div>
+        <div className={classes.actions}>
+          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+            Login
+          </Button>
+        </div>
+      </form>
+    </Card>
+  );
+};
+
+export default Login;
+```
+
+### useReducer & Reducers in General
+
+useReducer helps use with state management in more complex states (e.g. multiple states that are related or need to be hcanged together). useReducer replaces useState for these more complex states where useState() may lead to complex/buggy code and helps handle states which depend on mroe than one other state. We should use useReducer only when states being manage is complex enough to warrant the effort to set up useReducer.
+
+``` {.javascript}
+const [state, dispatchFn] = useReducer (reducerFn, InitialState, initiFn)
+```
+
+The useReducer() syntax is shown above. It returns a state snapshot (used for re-redner/re-evaluation cycle) and a function that can be used to dispatch a new action. Below we refactor the log in to manage the enteredEmail and emailIsValid with a singles state using useReducer().
+
+``` {.javascript}
+import React, { useState, useEffect, useReducer } from 'react';
+
+import Card from '../UI/Card/Card';
+import classes from './Login.module.css';
+import Button from '../UI/Button/Button';
+
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.includes('@') };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.includes('@') };
+  }
+  return { value: '', isValid: false };
+ };
+  
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { val: action.val, isValid: state.val.trim().length > 6 };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.val, isValid: state.val.trim().length > 6 };
+  }
+  return { val: '', isValid: false };
+}
+
+
+
+const Login = (props) => {
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {value: '', isValid: false,});
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, { val: '', isValid: false })
+  const [formIsValid, setFormIsValid] = useState(false);
+
+  useEffect(() => {
+    const indentifier = setTimeout(() => {
+      setFormIsValid(emailState.isValid && passwordState.isValid);
+    }, 500);
+
+    return () => {
+      clearTimeout(indentifier);
+    };
+  }, [emailState.isValid, passwordState.isValid]);
+
+  const emailChangeHandler = (event) => {
+    dispatchEmail({type: 'USER_INPUT', val: event.target.value});
+  };
+
+  const passwordChangeHandler = (event) => {
+    dispatchPassword({type: 'USER_INPUT', val: event.target.value})
+  };
+
+  const validateEmailHandler = () => {
+    dispatchEmail({ type: 'INPUT_BLUR' });
+  };
+
+  const validatePasswordHandler = () => {
+    dispatchPassword({ type: 'INPUT_BLUR' });
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    props.onLogin(emailState.value, passwordState.val);
+  };
+
+  return (
+    <Card className={classes.login}>
+      <form onSubmit={submitHandler}>
+        <div
+          className={`${classes.control} ${
+            emailState.isValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="email">E-Mail</label>
+          <input
+            type="email"
+            id="email"
+            value={emailState.value}
+            onChange={emailChangeHandler}
+            onBlur={validateEmailHandler}
+          />
+        </div>
+        <div
+          className={`${classes.control} ${
+            passwordState.isValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={passwordState.val}
+            onChange={passwordChangeHandler}
+            onBlur={validatePasswordHandler}
+          />
+        </div>
+        <div className={classes.actions}>
+          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+            Login
+          </Button>
+        </div>
+      </form>
+    </Card>
+  );
+};
+
+export default Login;
+```
+
+Above we use useReducer to move logic in our handler funcitons to the dispatchFn. Morover, we pass specific proporties of our useReducer objects as dependences in useEffect. This is a very common React pattern.
+
+**🦀Generally, you'll know when you need to useReducer() when state management is useState() related and cumbersome 🦀**
+
+### Context API
+
+In our current App.js for the log-in form app, we can see that we are passing a lot of data via props to components. In fact most of these are not directly used by the children but are further forwarded down to their children.
+
+``` {.javascript}
+import React, { useState, useEffect } from 'react';
+
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
+    if (storedUserLoggedInInformation === '1') { setIsLoggedIn(true);}
+  }, [])
+
+
+  const loginHandler = (email, password) => {
+    // We should of course check email and password
+    // But it's just a dummy/ demo anyways
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <React.Fragment>
+      <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+      <main>
+        {!isLoggedIn && <Login onLogin={loginHandler} />}
+        {isLoggedIn && <Home onLogout={logoutHandler} />}
+      </main>
+    </React.Fragment>
+  );
+}
+
+export default App;
+```
+
+Context API is a component-wide, 'behind-the-scenes- State storage which allows us to direct change and pass States between components without prop chains. We create contexts in its own folder ./root/store here we make auth-context.js because we are tracking authentication status.
+
+``` {.javascript}
+import React from 'react';
+
+const AuthContext = React.createContext({
+  isLoggedIn: false
+})
+
+export default AuthContext;
+```
+
+In order to use this we import into the appropriate component then wrap the section of JSX which requires this data. Since for this app, authentication is required everywhere we will import and wrap in App.js. Note, below we linked value provided to a state, this allows use to change context values. **This process provides the children and all their children access to the data/functions in this context.**
+
+``` {.javascript}
+import React, { useState, useEffect } from 'react';
+
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+import AuthContext from './store/auth-context';
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
+    if (storedUserLoggedInInformation === '1') { setIsLoggedIn(true);}
+  }, [])
+
+
+  const loginHandler = (email, password) => {
+    // We should of course check email and password
+    // But it's just a dummy/ demo anyways
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <React.Fragment>
+      <AuthContext.Provider
+        value={{
+          isLoggedIn: isLoggedIn,
+          onLogout: logoutHandler
+        }}
+      >
+        <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+        <main>
+          {!isLoggedIn && <Login onLogin={loginHandler} />}
+          {isLoggedIn && <Home onLogout={logoutHandler} />}
+        </main>
+      </AuthContext.Provider>
+    </React.Fragment>
+  );
+}
+
+export default App;
+```
+
+The second part is to **listen** to this provider via either a useContext() or AuthContext.Consumer. Below we listen to auth-context in the Navigation component by 1) importing the AuthContext then 2) useContext() hook to get access to the data. ([commit](https://github.com/rl627/udemy-react-js-academind/commit/a86d807766752c60530fcd10359741f7d4a59bfe))
+
+``` {.javascript}
+import React, { useContext } from 'react';
+
+import classes from './Navigation.module.css';
+import AuthContext from '../../store/auth-context';
+
+const Navigation = () => {
+  const ctx = useContext(AuthContext);
+
+  return (
+    <nav className={classes.nav}>
+      <ul>
+        {ctx.isLoggedIn && (
+          <li>
+            <a href="/">Users</a>
+          </li>
+        )}
+        {ctx.isLoggedIn && (
+          <li>
+            <a href="/">Admin</a>
+          </li>
+        )}
+        {ctx.isLoggedIn && (
+          <li>
+            <button onClick={ctx.onLogout}>Logout</button>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+};
+
+export default Navigation;
+```
+
+In general props will be main way to forward data. Context is to be used only to avoid prop chains and to help manage app-wide state.
+
+🦀You should always have at least dummy data/functions in the context component to enable IDE auto-completion. They can just be empty arrow functions or null values which are initialized later in the provider. 🦀
+
+🦀it is common when using context for authentication apply **separation of concerns** by pulling t authentication logic out of App.js and moving it to a custom context provider component. 🦀
+
+``` {.javascript}
+import React, { useState }from 'react';
+
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: () => { },
+  onLogin: (email, password) => { }
+});
+
+const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  
+  const loginHandler = (email, password) => {
+    // We should of course check email and password
+    // But it's just a dummy/ demo anyways
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <AuthContextProvider
+      value={{
+        isLoggedIn: isLoggedIn,
+        onLogout: logoutHandler,
+        onLogin: loginHandler
+      }}
+    >
+      {props.children}
+    </AuthContextProvider>
+  );
+}
+
+export default AuthContext;
+```
+
+Above we refactor auth-context.js to be a stand alone file manages the entire login state and sets up all the context. We then wrap the App component in index.js with this provide, then further refactor each component to use this new provider. the advantage could be that we have a leaner app component (see below) where we focus on the applciation and we sepearate authentication to its own component. ([commit](https://github.com/rl627/udemy-react-js-academind/commit/8994c05034ab44c5a50446313f8f21c92fbe03b9))
+
+``` {.javascript}
+import React, { useContext } from 'react';
+
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+import AuthContext from './store/auth-context'
+
+function App() {
+  const authContext = useContext(AuthContext);
+  
+  return (
+    <React.Fragment>
+      <MainHeader
+        isAuthenticated={authContext.isLoggedIn}
+        onLogout={authContext.logoutHandler}
+      />
+      <main>
+        {!authContext.isLoggedIn && <Login  />}
+        {authContext.isLoggedIn && <Home  />}
+      </main>
+    </React.Fragment>
+  );
+}
+
+export default App;
+```
+
+🦀Context API limitations: Not optimized for high frequency changes see Redux 🦀
+
+🦀**Context API limitations: Components should be configurable via props and short prop chains might not replacement**🦀
+
+### React Hook Rules
