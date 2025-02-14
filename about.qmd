@@ -4,16 +4,12 @@ image: profile.jpg
 about:
   template: jolla
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com
-    - icon: linkedin
-      text: LinkedIn
-      href: https://linkedin.com
-    - icon: github
-      text: Github
-      href: https://github.com
-
+    - icon: github 
+      href: https://github.com/ran-codes
+    - icon: linkedin 
+      href: https://www.linkedin.com/in/ran-li-6b722718/
+    - text: "{{< iconify fa6-brands:bluesky >}}"
+      href: https://bsky.app/profile/ran-li.bsky.social
 ---
 
 About this blog
