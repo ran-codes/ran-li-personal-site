@@ -1,8 +1,13 @@
 project:
   type: website
-
+  
+        
 website:
   title: "Home"
+  search: 
+    location: navbar
+    type: overlay
+    keyboard-shortcut: ["?", "s", '/']
   navbar:
     left:
       - blog.qmd
