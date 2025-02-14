@@ -9,9 +9,12 @@ website:
       - about.qmd
     right:
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/ran-codes
+      - icon: linkedin
+        href: https://www.linkedin.com/in/ran-li-6b722718/
+      - text: "{{< iconify fa6-brands:bluesky >}}"
+        href: https://bsky.app/profile/ran-li.bsky.social
+        
 format:
   html:
     theme: cosmo
